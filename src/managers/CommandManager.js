@@ -1,7 +1,7 @@
 const { Collection, PermissionsBitField } = require("discord.js");
 const { readdir } = require("fs");
 const { join } = require("path");
-const Command = require("../structures/Command.js");
+const Command = require("../structures/Command.js").default;
 const getDir = require("../utils/getDir.js");
 
 module.exports = class CommandManager extends Collection {
