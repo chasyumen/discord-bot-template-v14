@@ -9,7 +9,7 @@ const client = (global.client = new Client({
     presence: {
         status: "idle",
         activities: [
-            { name: `Test Mode | ${require("../package.json").version}` }//Starting | ${require("./../package.json").version}
+            { name: `Starting up... (1/1) | ${require("../package.json").version}` }//Starting | ${require("./../package.json").version}
         ]
     },
 }));
