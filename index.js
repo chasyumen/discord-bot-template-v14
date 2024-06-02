@@ -8,6 +8,7 @@ process.on("unhandledRejection", console.error);
 
 shards.on("shardCreate", shard => {
 	// Listeing for the ready event on shard.
+	console.log("shard create")
 	shard.on("ready", async () => {
 
 	});

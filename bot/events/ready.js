@@ -5,6 +5,10 @@ module.exports.event = "ready";
 
 module.exports.run = async function () {
     console.log(`The bot has been logged in as ${client.user.tag}.`);
+    client.user.presence.set({
+        activities: [{ name: `Initializing (2/2) | Version: ${require("../../package.json").version}`, type: 0 },],
+        status: "online"
+    });
     await client.application.commands.fetch();
     await async2.eachSeries(client.application.commands.cache.toJSON(), async (cmd) => {
         if (cmd.type !== "CHAT_INPUT") return;
@@ -20,7 +24,7 @@ module.exports.run = async function () {
         var set = false;
         var command = client.application.commands.cache.find(x => x.name == cmd.name);
         if (typeof command == "object") {
-            var descriptionParsed = `${cmd.description.en_US} / ${cmd.description.ja}`;
+            var descriptionParsed = `${cmd.descriptions.en_US} / ${cmd.descriptions.ja}`;
             if (descriptionParsed !== command.description) {
                 set = true;
             } else if (cmd.slashOptions.options) {
@@ -50,7 +54,7 @@ module.exports.run = async function () {
         }
         return true;
     });
-    console.log(client.locale.getString("test2", "ja"))
+    // console.log(client.locale.getString("test2", "ja"))
     var number = 0;
     setPresence();
     setInterval(setPresence, 10000);
