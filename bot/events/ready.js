@@ -8,7 +8,7 @@ export const event = "ready";
 export async function run () {
     console.log(`The bot has been logged in as ${client.user.tag}.`);
     client.user.presence.set({
-        activities: [{ name: `Initializing (2/2) | Version: ${import("../../package.json", { assert: { type: "json" } }).version}`, type: 0 },],
+        activities: [{ name: `Initializing (2/2) | Version: ${JSON.parse(readFileSync("./package.json").toString()).version}`, type: 0 },],
         status: "online"
     });
     await client.application.commands.fetch();
