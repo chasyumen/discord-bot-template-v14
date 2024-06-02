@@ -52,17 +52,35 @@ class BitField2 extends BitField {// extends BitField
                 passable = false;
             }
         });
-        if (!error && checkAdmin && this._has(this.FLAGS["ADMINISTRATOR"])) passable = true;
+        if (!error && checkAdmin && this._has(defFlags["ADMINISTRATOR"])) passable = true;
         return passable;
     }
 
-    FLAGS = {
-        "ADMINISTRATOR": 1 << 0, //1
-        "TESTER": 1 << 1, //2
-        "DANGER_COMMANDS": 1 << 2, //4
-        "IGNORE_COOLDOWN": 1 << 3, //8
-    }
+    FLAGS = FLAGS;
 
+    /**
+     * Get bits from passed FLAGS.
+     * @param {Array} array 
+     * @returns {Number}
+     */
+    
+    static getBits(array) {
+        if (typeof array == "string") array = [array];
+        if (typeof array !== "object") throw new TypeError("Expected string or object but received "+ typeof array);
+        var bits = 0;
+        array.forEach((permType) => {
+            if (!FLAGS[permType]) return false;
+            bits = bits + FLAGS[permType];
+        });
+        return bits;
+    }
+}
+
+let FLAGS = {
+    "ADMINISTRATOR": 1 << 0, //1
+    "TESTER": 1 << 1, //2
+    "DANGER_COMMANDS": 1 << 2, //4
+    "IGNORE_COOLDOWN": 1 << 3, //8
 }
 
 module.exports = BitField2;

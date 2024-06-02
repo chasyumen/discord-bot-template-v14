@@ -9,9 +9,9 @@ module.exports.hide = true;
 module.exports.disableSlash = false;
 module.exports.slashOptions = {};
 module.exports.permissions = {
-    user: ["TESTER"],
-    botNeeded: 8n,
-    guildMember: 8n,
+    bUser: ["TESTER"],
+    dBotNeeded: 8n,
+    dGuildMember: 8n,
 }
 module.exports.exec = async function (cmd) {
     cmd.reply("test done!");

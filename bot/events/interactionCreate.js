@@ -11,7 +11,7 @@ module.exports.run = async function (interaction) {
     // var uData = await interaction.user.getdb();
     if (!interaction.channel.type == "0") return;
     var language = config.defaultLanguage;//uData.language;
-    console.log(interaction.type);
+    // console.log(interaction.type);
     if (interaction.type == 2) {
         // if (!client.cooldowns.command.checkUser(interaction.user, interaction.commandName).state) return;
         // client.cooldowns.command.add(interaction.user, interaction.guild, interaction.commandName);

@@ -2,7 +2,7 @@ const Discord = (global.Discord = require("discord.js"));
 const async2 = (global.async2 = require("async"));
 const config = (global.config = require("../config.js"));
 const Client = require("../src/structures/Client.js");
-// const UserPermission = require("../src/structures/UserPermission.js");
+const UserPermission = require("../src/structures/PermissionsBitField.js");
 const client = (global.client = new Client({
     intents: 3276799, //all intents / 3243773 no special intents
     allowedMentions: { repliedUser: false },
@@ -39,6 +39,30 @@ Discord.TextChannel.prototype.fetchMessages = async function (number) {
         data.forEach(m => messages.set(m.id, m))
     };
     return messages;
+};
+
+Discord.User.prototype.getPermissions = async function () {
+    var dbPerm = null;
+    if (typeof config.userPermissions[this.id] == "number") {
+        var configuredPermisson = String(config.userPermissions[this.id]);
+    } else {
+        var configuredPermisson = false;
+    }
+    var bitNumber = dbPerm || configuredPermisson;
+    if (!bitNumber) {
+        bitNumber = 0;
+    }
+    try {
+        var UP = new UserPermission(Number(String(bitNumber)));
+        return UP;
+    } catch (error) {
+        try {
+            var UP = new UserPermission(Number(bitNumber));
+            return UP;
+        } catch (error) {
+            throw error;
+        }
+    }
 };
 
 client.start(process.env.DISCORD_TOKEN);

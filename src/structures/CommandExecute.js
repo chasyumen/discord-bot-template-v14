@@ -85,12 +85,14 @@ module.exports = class CommandExecute {
     // }
 
     async exec() {
-        // var permission = await this.author.getPermissions();
+        // await this.deferReply();
+        var language = this.info.language;
+        var permission = await this.author.getPermissions();
         // console.log(permission);
-        // if (permission.verify(this.command.permissions.userInBot)) {
+        if (permission.has(this.command.permissions.bUser)) {
             return await this.command.exec(this, this.raw);
-        // } else {
-            // return this.deleteReply();
-        // }
+        } else {
+            return await this.reply({ content: client.locale.getString("errors.permissions.user.botPermission", language), ephemeral: true });
+        }
     }
 }
