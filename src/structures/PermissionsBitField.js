@@ -1,5 +1,5 @@
-const { BitField } = require("discord.js");
-const async2 = require("async");
+import { BitField } from "discord.js";
+import async2 from "async";
 
 class BitField2 extends BitField {// extends BitField 
     constructor(data) {
@@ -83,4 +83,4 @@ let FLAGS = {
     "IGNORE_COOLDOWN": 1 << 3, //8
 }
 
-module.exports = BitField2;
+export default BitField2;

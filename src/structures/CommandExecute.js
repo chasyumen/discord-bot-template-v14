@@ -1,6 +1,6 @@
-const { Message } = require("discord.js");
+import { Message } from "discord.js";
 
-module.exports = class CommandExecute {
+export default class CommandExecute {
     constructor(command, raw, info) {
         this.command = command;
         this.info = info;

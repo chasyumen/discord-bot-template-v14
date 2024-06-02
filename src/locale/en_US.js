@@ -1,6 +1,6 @@
-module.exports.name = "en_US";
+export const name = "en_US";
 
-module.exports.data = {
+export const data = {
     "errors": {
         "permissions": {
             "bot": {

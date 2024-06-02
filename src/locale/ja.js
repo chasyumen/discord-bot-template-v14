@@ -1,6 +1,6 @@
-module.exports.name = "ja";
+export const name = "ja";
 
-module.exports.data = {
+export const data = {
     "errors": {
         "permissions": {
             "bot": {

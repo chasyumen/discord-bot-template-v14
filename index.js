@@ -1,7 +1,11 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
 
-const Discord = (global.Discord = require("discord.js"));
-const ShardingManager = require("./src/managers/ShardingManager.js");
+dotenv.config();
+
+import * as Discord from "discord.js";
+
+global.Discord = Discord;
+import ShardingManager from "./src/managers/ShardingManager.js";
 const shards = new ShardingManager("./bot/index.js");
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);

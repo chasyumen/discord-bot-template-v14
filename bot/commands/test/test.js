@@ -1,19 +1,19 @@
-module.exports.name = "test";
-module.exports.descriptions = {
+export const name = "test";
+export const descriptions = {
     en_US: "test",
     ja: "test"
 };
-module.exports.category = "dev";
-module.exports.aliases = ["test2"];
-module.exports.hide = true;
-module.exports.disableSlash = false;
-module.exports.slashOptions = {};
-module.exports.permissions = {
+export const category = "dev";
+export const aliases = ["test2"];
+export const hide = true;
+export const disableSlash = false;
+export const slashOptions = {};
+export const permissions = {
     bUser: ["TESTER"],
     dBotNeeded: 8n,
     dGuildMember: 8n,
 }
-module.exports.exec = async function (cmd) {
+export async function exec (cmd) {
     cmd.reply("test done!");
     // console.log(cmd);
-};
+}

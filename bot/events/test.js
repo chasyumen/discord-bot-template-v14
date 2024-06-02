@@ -1,7 +1,7 @@
-module.exports.name = "ready";
-module.exports.event = "ready";
+export const name = "ready";
+export const event = "ready";
 
-module.exports.run = async function () {
+export async function run () {
     // console.log(`The bot has been logged in as ${client.user.tag}.`);
     // setInterval(() => {
     //     client.channels.cache.forEach((ch) => {

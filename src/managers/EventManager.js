@@ -1,8 +1,8 @@
-const { Collection } = require("discord.js");
-const { readdir } = require("fs");
-const { join } = require("path");
+import { Collection } from "discord.js";
+import { readdir } from "fs";
+import { join } from "path";
 
-module.exports = class EventManager extends Collection {
+export default class EventManager extends Collection {
     constructor(client) {
         super();
         this.client = client;
@@ -10,8 +10,8 @@ module.exports = class EventManager extends Collection {
 
     async loadAll() {
         const events = await new Promise(resolve => readdir("./bot/events",(error, result) => resolve(result)));
-        return events.filter(x => x.endsWith('.js')).forEach(file => {
-            let event = require(join("../../bot/events", file));
+        return events.filter(x => x.endsWith('.js')).forEach(async file => {
+            let event = await import("../../bot/events/"+file);
             this.set(event.name, event);
             this.client.on(event.event, async function (...a) {
                 return await event.run(...a);
