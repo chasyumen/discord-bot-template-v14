@@ -1,6 +1,6 @@
-const { ShardingManager } = require("discord.js");
+import { ShardingManager } from "discord.js";
 
-module.exports = class BotShardingManager extends ShardingManager{
+export default class BotShardingManager extends ShardingManager{
     constructor(...options) {
         super(...options);
     }

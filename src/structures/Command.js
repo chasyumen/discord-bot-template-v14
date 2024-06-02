@@ -1,6 +1,6 @@
-const CommandExecute = require("./CommandExecute.js");
+import CommandExecute from "./CommandExecute.js";
 
-module.exports = class Command {
+export default class Command {
     constructor(cmd) {
         this.name = cmd.name;
         this.descriptions = cmd.descriptions;

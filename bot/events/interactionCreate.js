@@ -1,7 +1,7 @@
-module.exports.name = "interactionCreate";
-module.exports.event = "interactionCreate";
+export const name = "interactionCreate";
+export const event = "interactionCreate";
 
-module.exports.run = async function (interaction) {
+export async function run (interaction) {
     if (interaction.user.id == client.user.id) return;
     if (!interaction.channel) return;
     if (!interaction.inGuild()) {

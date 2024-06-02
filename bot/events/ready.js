@@ -1,16 +1,18 @@
-const async2 = require("async");
+import { eachSeries } from "async";
+import { readFileSync } from "fs";
 
-module.exports.name = "ready";
-module.exports.event = "ready";
 
-module.exports.run = async function () {
+export const name = "ready";
+export const event = "ready";
+
+export async function run () {
     console.log(`The bot has been logged in as ${client.user.tag}.`);
     client.user.presence.set({
-        activities: [{ name: `Initializing (2/2) | Version: ${require("../../package.json").version}`, type: 0 },],
+        activities: [{ name: `Initializing (2/2) | Version: ${import("../../package.json", { assert: { type: "json" } }).version}`, type: 0 },],
         status: "online"
     });
     await client.application.commands.fetch();
-    await async2.eachSeries(client.application.commands.cache.toJSON(), async (cmd) => {
+    await eachSeries(client.application.commands.cache.toJSON(), async (cmd) => {
         if (cmd.type !== "CHAT_INPUT") return;
         var command = client.commands.toJSON().find(x => x.name == cmd.name);
         if (!command) {
@@ -20,7 +22,7 @@ module.exports.run = async function () {
         }
         return true;
     });
-    await async2.eachSeries(client.commands.toJSON(), async (cmd) => {
+    await eachSeries(client.commands.toJSON(), async (cmd) => {
         var set = false;
         var command = client.application.commands.cache.find(x => x.name == cmd.name);
         if (typeof command == "object") {
@@ -60,8 +62,8 @@ module.exports.run = async function () {
     setInterval(setPresence, 10000);
     async function setPresence() {
         var presences = [
-            { name: `Discord Bot Template v14 | Version: ${require("../../package.json").version}`, type: 0 },
-            { name: `Under Testing | Version: ${require("../../package.json").version}`, type: 0 },
+            { name: `Discord Bot Template v14 | Version: ${JSON.parse(readFileSync("./package.json").toString()).version}`, type: 0 },
+            { name: `Under Testing | Version: ${JSON.parse(readFileSync("./package.json").toString()).version}`, type: 0 },
         ]
         if (number >= (presences.length - 1)) {
             number = 0;

@@ -1,13 +1,13 @@
-const { Client, Collection } = require("discord.js");
-const LocaleManager = require("../managers/LocaleManager.js");
-const EventManager = require("../managers/EventManager.js");
-const CommandManager = require("../managers/CommandManager.js");
+import { Client, Collection } from "discord.js";
+import LocaleManager from "../managers/LocaleManager.js";
+import EventManager from "../managers/EventManager.js";
+import CommandManager from "../managers/CommandManager.js";
 // const MessageComponentManager = require("../managers/MessageComponentManager.js");
 // const VoiceManager = require("../managers/VoicePlayerManager.js");
 // const Database = require("../database/index.js");
 // const CooldownManager = require("../managers/CooldownManager.js");
 
-module.exports = class CustomClient extends Client {
+export default class CustomClient extends Client {
     constructor(options) {
         super(options);
         this.locale = new LocaleManager(this);

@@ -1,19 +1,23 @@
-const { Collection } = require("discord.js");
-const { readdir } = require("fs");
-const { get } = require("http");
-const { join } = require("path");
+import { Collection } from "discord.js";
+import { readdir } from "fs";
+import { get } from "http";
+import { join } from "path";
 
-module.exports = class LocaleManager extends Collection {
+export default class LocaleManager extends Collection {
     constructor(client) {
         super();
         this.client = client;
         this.list = new Array();
     }
 
+    async test( ) {
+        import("../locale/en_US.js");
+    }
+
     async loadAll() {
         const locales = await new Promise(resolve => readdir("./src/locale",(error, result) => resolve(result)));
-        return locales.filter(x => x.endsWith('.js')).forEach(file => {
-            let locale = require(join("../locale", file));
+        return locales.filter(x => x.endsWith('.js')).forEach(async file => {
+            let locale = await import("../locale/"+file);
             this.set(locale.name, locale);
             this.list.push(locale.name)
         });

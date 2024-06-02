@@ -1,6 +1,6 @@
-const glob = require("glob");
+import glob from "glob";
 
-module.exports = async function (dir) {
+export default async function (dir) {
     var getDirectories = function (src, callback) {
         glob(src + '/**/*', callback);
     };

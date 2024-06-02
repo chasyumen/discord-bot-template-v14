@@ -1,4 +1,4 @@
-var PermissionsBitField = require("./src/structures/PermissionsBitField.js");
+import PermissionsBitField from "./src/structures/PermissionsBitField.js";
 
 var perm = new PermissionsBitField(14);
 console.log(PermissionsBitField.getBits("ADMINISTRATOR"))

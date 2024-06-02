@@ -1,22 +1,28 @@
-const Discord = (global.Discord = require("discord.js"));
-const async2 = (global.async2 = require("async"));
-const config = (global.config = require("../config.js"));
-const Client = require("../src/structures/Client.js");
-const UserPermission = require("../src/structures/PermissionsBitField.js");
+import * as Discord from "discord.js";
+import async2 from "async";
+import config from "../config.js";
+import Client from "../src/structures/Client.js";
+import UserPermission from "../src/structures/PermissionsBitField.js";
+import { readFileSync } from "fs";
+
+global.async2 = async2;
+global.Discord = Discord;
+global.config = config;
+
 const client = (global.client = new Client({
     intents: 3276799, //all intents / 3243773 no special intents
     allowedMentions: { repliedUser: false },
     presence: {
         status: "idle",
         activities: [
-            { name: `Starting up... (1/2) | ${require("../package.json").version}` }//Starting | ${require("./../package.json").version}
+            { name: `Starting up... (1/2) | ${JSON.parse(readFileSync("./package.json").toString()).version}` }//Starting | ${require("./../package.json").version}
         ]
     },
 }));
 
 Discord.TextChannel.prototype.fetchMessages = async function (number) {
     if (!this.isText()) return false;
-    var messages = new Discord.Collection();
+    var messages = new Collection();
     async function fm(...opt) {
         return await this.messages.fetch(...opt);
     };
