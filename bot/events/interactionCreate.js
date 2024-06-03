@@ -35,6 +35,7 @@ export async function run (interaction) {
         }
         return executor.exec();
     } else if (interaction.type == 3) {
+        return;
         if (!interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 14)])) return await interaction.reply(client.locale.getString("errors.permissions.bot.missingEmbed", language));
         // console.log(interaction.customId);
         if (!(interaction.message.interaction || interaction.message.reference)) return false;
