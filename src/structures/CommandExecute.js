@@ -90,6 +90,7 @@ export default class CommandExecute {
         var permission = await this.author.getPermissions();
         // console.log(permission);
         if (permission.has(this.command.permissions.bUser)) {
+            //ユーザー側の権限チェックを追加
             return await this.command.exec(this, this.raw);
         } else {
             return await this.reply({ content: client.locale.getString("errors.permissions.user.botPermission", language), ephemeral: true });
