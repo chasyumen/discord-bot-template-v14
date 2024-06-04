@@ -9,7 +9,7 @@ export const hide = true;
 export const disableSlash = false;
 export const slashOptions = {};
 export const permissions = {
-    bUser: ["TESTER"],
+    internal: ["TESTER"],
     dBotNeeded: 8n,
     dGuildMember: 8n,
 }

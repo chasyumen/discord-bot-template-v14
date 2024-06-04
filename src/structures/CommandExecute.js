@@ -89,7 +89,8 @@ export default class CommandExecute {
         var language = this.info.language;
         var permission = await this.author.getPermissions();
         // console.log(permission);
-        if (permission.has(this.command.permissions.bUser)) {
+        if (permission.has(this.command.permissions.internal)) {
+            if (!this.interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await interaction.reply({ content: `<#${interaction.channel.id}> 内でBotがメッセージを閲覧する権限または(埋め込み)メッセージを送る権限がありません。`, ephemeral: true });
             //ユーザー側の権限チェックを追加
             return await this.command.exec(this, this.raw);
         } else {

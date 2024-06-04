@@ -2,7 +2,7 @@ import * as Discord from "discord.js";
 import async2 from "async";
 import config from "../config.js";
 import Client from "../src/structures/Client.js";
-import UserPermission from "../src/structures/PermissionsBitField.js";
+import UserPermission from "../src/structures/InternalPermissionsBitField.js";
 import { readFileSync } from "fs";
 
 global.async2 = async2;

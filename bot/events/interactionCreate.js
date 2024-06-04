@@ -15,7 +15,7 @@ export async function run (interaction) {
     if (interaction.type == 2) {
         // if (!client.cooldowns.command.checkUser(interaction.user, interaction.commandName).state) return;
         // client.cooldowns.command.add(interaction.user, interaction.guild, interaction.commandName);
-        if (!interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await interaction.reply({ content: `<#${interaction.channel.id}> 内でBotがメッセージを閲覧する権限または(埋め込み)メッセージを送る権限がありません。`, ephemeral: true });
+        // if (!interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await interaction.reply({ content: `<#${interaction.channel.id}> 内でBotがメッセージを閲覧する権限または(埋め込み)メッセージを送る権限がありません。`, ephemeral: true });
         // if (!interaction.channel.permissionsFor(interaction.guild.me).has(["EMBED_LINKS"])) return await interaction.reply(client.locale.getString("errors.permissions.bot.missingEmbed", language));
         var info = {
             command: interaction.commandName,
