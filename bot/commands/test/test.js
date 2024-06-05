@@ -10,7 +10,8 @@ export const disableSlash = false;
 export const slashOptions = {};
 export const permissions = {
     internal: ["Tester"],
-    botNeeded: 8n,
+    botNeededInChannel: 0n,
+    botNeededInGuild: 8n,
     userNeeded: 8n,
 }
 export async function exec (cmd) {

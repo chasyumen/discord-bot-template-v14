@@ -90,12 +90,16 @@ export default class CommandExecute {
         var language = this.info.language;
         var InternalPermissions = await this.author.getPermissions();
         // console.log(permission);
+        
         if (InternalPermissions.has(this.command.permissions.internal)) {
             if (!this.interaction.channel.permissionsFor((await this.interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await this.interaction.reply({ content: `<#${this.interaction.channel.id}> 内でBotがメッセージを閲覧する権限または(埋め込み)メッセージを送る権限がありません。`, ephemeral: true });
-            var botPermission = new ExtendedPermissionsBitField(this.interaction.channel.permissionsFor(await this.interaction.guild.members.fetchMe()).bitfield);
-            if (!botPermission.has(this.command.permissions.botNeeded)) {
-                return await this.interaction.reply({ content: `Bot permission check failed.`, ephemeral: true });
+            var botChannelPermission = new ExtendedPermissionsBitField(this.interaction.channel.permissionsFor(await this.interaction.guild.members.fetchMe()).bitfield);
+            var botGuildPermission = new ExtendedPermissionsBitField(this.interaction.guild.members.me.permissions.bitfield);
+            if (!botGuildPermission.has(this.command.permissions.botNeededInGuild)) {
+                console.log(botGuildPermission.missing(this.command.permissions.botNeededInGuild).toString())
+                return await this.interaction.reply({ content: botGuildPermission.missing(this.command.permissions.botNeededInGuild).toString(), ephemeral: true });
             }
+            //ギルド本体で与えられていてもチャンネルで与えられていない場合の例外処理+親切に教えてあげましょう
             //if (!this.interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has(this.command.permissions.botNeeded))
             // ↑↑↑要多言語対応化↑↑↑
             //ユーザー側の権限チェックを追加
