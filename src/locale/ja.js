@@ -9,7 +9,7 @@ export const data = {
             },
             "user": {
                 "manageGuild": "このコマンドへアクセスするにはサーバー管理権限を保有している必要があります。",
-                "botPermission": "このコマンドへのアクセスが拒否されました。"
+                "internalPermission": "このコマンドへのアクセスが拒否されました。"
             }
         },
         "title": "エラー",

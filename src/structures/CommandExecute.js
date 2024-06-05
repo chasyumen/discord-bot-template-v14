@@ -1,4 +1,5 @@
 import { Message } from "discord.js";
+import ExtendedPermissionsBitField from "./ExtendedPermissionsBitField.js";
 
 export default class CommandExecute {
     constructor(command, interaction, info) {
@@ -87,16 +88,20 @@ export default class CommandExecute {
     async exec() {
         // await this.deferReply();
         var language = this.info.language;
-        var permission = await this.author.getPermissions();
+        var InternalPermissions = await this.author.getPermissions();
         // console.log(permission);
-        if (permission.has(this.command.permissions.internal)) {
+        if (InternalPermissions.has(this.command.permissions.internal)) {
             if (!this.interaction.channel.permissionsFor((await this.interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await this.interaction.reply({ content: `<#${this.interaction.channel.id}> 内でBotがメッセージを閲覧する権限または(埋め込み)メッセージを送る権限がありません。`, ephemeral: true });
+            var botPermission = new ExtendedPermissionsBitField(this.interaction.channel.permissionsFor(await this.interaction.guild.members.fetchMe()).bitfield);
+            if (!botPermission.has(this.command.permissions.botNeeded)) {
+                return await this.interaction.reply({ content: `Bot permission check failed.`, ephemeral: true });
+            }
             //if (!this.interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has(this.command.permissions.botNeeded))
             // ↑↑↑要多言語対応化↑↑↑
             //ユーザー側の権限チェックを追加
             return await this.command.exec(this, this.interaction);
         } else {
-            return await this.reply({ content: client.locale.getString("errors.permissions.user.botPermission", language), ephemeral: true });
+            return await this.reply({ content: client.locale.getString("errors.permissions.user.internalPermission", language), ephemeral: true });
         }
     }
 }

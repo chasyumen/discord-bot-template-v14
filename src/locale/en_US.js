@@ -9,7 +9,7 @@ export const data = {
             },
             "user": {
                 "manageGuild": "You need manage guild permission to use that command.",
-                "botPermission": "Access to this command has been denied."
+                "internalPermission": "Access to this command has been denied."
             }
         },
         "title": "Error",
