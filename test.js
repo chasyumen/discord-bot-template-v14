@@ -1,6 +1,6 @@
 import ExtendedPermissionsBitField from "./src/structures/ExtendedPermissionsBitField.js";
 
-console.log(ExtendedPermissionsBitField.getBits("Administrator"));
+console.log(ExtendedPermissionsBitField.getBits(2n));
 
 // import PermissionsBitField from "./src/structures/InternalPermissionsBitField.js";
 
