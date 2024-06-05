@@ -1,7 +1,7 @@
 import { BitField } from "discord.js";
 import async2 from "async";
 
-class BitField2 extends BitField {// extends BitField 
+class InternalPermissionsBitField extends BitField {// extends BitField 
     constructor(data) {
         if (typeof data !== "number") {
             data = Number(data);
@@ -15,7 +15,7 @@ class BitField2 extends BitField {// extends BitField
     };
 
     hasAdmin() {
-        return this.has("ADMINISTRATOR");
+        return this.has("Administrator");
     }
 
     has(flags, checkAdmin = true) {
@@ -30,7 +30,8 @@ class BitField2 extends BitField {// extends BitField
         // console.debug(flags)
         flags.forEach(flag => {
             // console.debug(typeof flag);
-            if (typeof flag == "bigint" || typeof flag == "number") {
+            if (typeof flag == "bigint") flag = Number(flag);
+            if (typeof flag == "number") {
                 if (parent._has(flag)) {
                     return true;
                 } else {
@@ -52,7 +53,7 @@ class BitField2 extends BitField {// extends BitField
                 passable = false;
             }
         });
-        if (!error && checkAdmin && this._has(defFlags["ADMINISTRATOR"])) passable = true;
+        if (!error && checkAdmin && this._has(defFlags["Administrator"])) passable = true;
         return passable;
     }
 
@@ -77,10 +78,10 @@ class BitField2 extends BitField {// extends BitField
 }
 
 let FLAGS = {
-    "ADMINISTRATOR": 1 << 0, //1
-    "TESTER": 1 << 1, //2
-    "DANGER_COMMANDS": 1 << 2, //4
-    "IGNORE_COOLDOWN": 1 << 3, //8
+    "Administrator": 1 << 0, //1
+    "Tester": 1 << 1, //2
+    "DangerCommands": 1 << 2, //4
+    // "IGNORE_COOLDOWN": 1 << 3, //8
 }
 
-export default BitField2;
+export default InternalPermissionsBitField;

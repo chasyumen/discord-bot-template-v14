@@ -9,9 +9,9 @@ export const hide = true;
 export const disableSlash = false;
 export const slashOptions = {};
 export const permissions = {
-    internal: ["TESTER"],
-    dBotNeeded: 8n,
-    dGuildMember: 8n,
+    internal: ["Tester"],
+    botNeeded: 8n,
+    userNeeded: 8n,
 }
 export async function exec (cmd) {
     cmd.reply("test done!");

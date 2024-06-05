@@ -1,29 +1,29 @@
 import { Message } from "discord.js";
 
 export default class CommandExecute {
-    constructor(command, raw, info) {
+    constructor(command, interaction, info) {
         this.command = command;
         this.info = info;
-        this.raw = raw;
+        this.interaction = interaction;
         this.isSlash = info.isSlash;
         this.replyMessage = null;
 
-        this.guild = this.raw.guild || null;
-        this.author = (this.isSlash ? raw.user : raw.author);
-        this.channel = this.raw.channel || null;
-        this.member = this.raw.member;
-        this.options = this.raw.options;
+        this.guild = this.interaction.guild || null;
+        this.author = (this.isSlash ? interaction.user : interaction.author);
+        this.channel = this.interaction.channel || null;
+        this.member = this.interaction.member;
+        this.options = this.interaction.options;
         this.replied = false;
     }
 
     // async send(...data) {
     //     if (this.replied) {
     //         if (!this.isSlash) {
-    //             var msg = await this.raw.channel.send(...data);
+    //             var msg = await this.interaction.channel.send(...data);
     //             return msg;
     //         } else {
-    //             // if (this.raw.deferred) return this.raw.editReply(...reply);
-    //             return await this.raw.channel.send(...data);
+    //             // if (this.interaction.deferred) return this.interaction.editReply(...reply);
+    //             return await this.interaction.channel.send(...data);
     //         }
     //     } else {
     //         return await this.reply(...data);
@@ -33,35 +33,35 @@ export default class CommandExecute {
     async reply(...reply) {
         this.replied = true;
         // if (!this.isSlash) {
-        //     var msg = await this.raw.reply(...reply);
+        //     var msg = await this.interaction.reply(...reply);
         //     this.replyMessage = msg;
         //     return msg;
         // } else {
-            if (this.raw.replied) return false;
-            if (this.raw.deferred) return this.raw.editReply(...reply);
-            return await this.raw.reply(...reply);
+            if (this.interaction.replied) return false;
+            if (this.interaction.deferred) return this.interaction.editReply(...reply);
+            return await this.interaction.reply(...reply);
         // }
     }
 
     async deleteReply(...option) {
         this.replied = true;
         // if (!this.isSlash) {
-        //     // var typing = await this.raw.channel.sendTyping(...option);
+        //     // var typing = await this.interaction.channel.sendTyping(...option);
         //     return null;
         // } else {
-            if (this.raw.replied) return false;
-            return await this.raw.deleteReply(...option);
+            if (this.interaction.replied) return false;
+            return await this.interaction.deleteReply(...option);
         // }
     }
 
     async deferReply(...option) {
         this.replied = true;
         // if (!this.isSlash) {
-        //     var typing = await this.raw.channel.sendTyping(...option);
+        //     var typing = await this.interaction.channel.sendTyping(...option);
         //     return typing;
         // } else {
-            if (this.raw.replied) return false;
-            return await this.raw.deferReply(...option);
+            if (this.interaction.replied) return false;
+            return await this.interaction.deferReply(...option);
         // }
     }
 
@@ -71,8 +71,8 @@ export default class CommandExecute {
     //         var edit = await this.replyMessage.edit(...option);
     //         return edit;
     //     } else {
-    //         if (!this.raw.replied) return false;
-    //         return await this.raw.editReply(...option);
+    //         if (!this.interaction.replied) return false;
+    //         return await this.interaction.editReply(...option);
     //     }
     // }
 
@@ -80,7 +80,7 @@ export default class CommandExecute {
     //     if (!this.isSlash) {
     //         return this.info.option;
     //     } else {
-    //         return this.raw.options.data.filter(x => x.type == "STRING").length !== 0 ? this.raw.options.data.filter(x => x.type == "STRING")[0].value : null;
+    //         return this.interaction.options.data.filter(x => x.type == "STRING").length !== 0 ? this.interaction.options.data.filter(x => x.type == "STRING")[0].value : null;
     //     }
     // }
 
@@ -90,9 +90,11 @@ export default class CommandExecute {
         var permission = await this.author.getPermissions();
         // console.log(permission);
         if (permission.has(this.command.permissions.internal)) {
-            if (!this.interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await interaction.reply({ content: `<#${interaction.channel.id}> 内でBotがメッセージを閲覧する権限または(埋め込み)メッセージを送る権限がありません。`, ephemeral: true });
+            if (!this.interaction.channel.permissionsFor((await this.interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await this.interaction.reply({ content: `<#${this.interaction.channel.id}> 内でBotがメッセージを閲覧する権限または(埋め込み)メッセージを送る権限がありません。`, ephemeral: true });
+            //if (!this.interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has(this.command.permissions.botNeeded))
+            // ↑↑↑要多言語対応化↑↑↑
             //ユーザー側の権限チェックを追加
-            return await this.command.exec(this, this.raw);
+            return await this.command.exec(this, this.interaction);
         } else {
             return await this.reply({ content: client.locale.getString("errors.permissions.user.botPermission", language), ephemeral: true });
         }
