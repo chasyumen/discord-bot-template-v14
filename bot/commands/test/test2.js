@@ -1,4 +1,4 @@
-export const name = "test";
+export const name = "testxu";
 export const descriptions = {
     en_US: "test",
     ja: "test"

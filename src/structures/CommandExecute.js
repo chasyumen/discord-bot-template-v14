@@ -99,7 +99,7 @@ export default class CommandExecute {
                 console.log(botGuildPermission.missing(this.command.permissions.botNeededInGuild).toString())
                 return await this.interaction.reply({ content: botGuildPermission.missing(this.command.permissions.botNeededInGuild).toString(), ephemeral: true });
             }
-            //Additionally, please make sure that these permissions are assigned as CHANNEL permission (not guild permission) {permission}
+            //Also I detected that these permissions are assigned as guild permissions and not CHANNEL permission which might have been overridden to be disabled. Please make sure to assign these permissions as channel permission.(not guild permission) {permission}
             //ギルド本体で与えられていてもチャンネルで与えられていない場合の例外処理+親切に教えてあげましょう
             //if (!this.interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has(this.command.permissions.botNeeded))
             // ↑↑↑要多言語対応化↑↑↑

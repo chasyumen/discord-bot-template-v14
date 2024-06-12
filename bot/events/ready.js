@@ -1,6 +1,4 @@
-import { eachSeries } from "async";
 import { readFileSync } from "fs";
-
 
 export const name = "ready";
 export const event = "ready";
@@ -12,50 +10,8 @@ export async function run () {
         status: "online"
     });
     await client.application.commands.fetch();
-    await eachSeries(client.application.commands.cache.toJSON(), async (cmd) => {
-        if (cmd.type !== "CHAT_INPUT") return;
-        var command = client.commands.toJSON().find(x => x.name == cmd.name);
-        if (!command) {
-            await cmd.delete();
-        } else if (command.disableSlash === true) {
-            await cmd.delete();
-        }
-        return true;
-    });
-    await eachSeries(client.commands.toJSON(), async (cmd) => {
-        var set = false;
-        var command = client.application.commands.cache.find(x => x.name == cmd.name);
-        if (typeof command == "object") {
-            var descriptionParsed = `${cmd.descriptions.en_US} / ${cmd.descriptions.ja}`;
-            if (descriptionParsed !== command.description) {
-                set = true;
-            } else if (cmd.slashOptions.options) {
-                if (cmd.slashOptions.options.length !== command.options.length) {
-                    set = true;
-                }
-            } else if (!cmd.slashOptions.options && command.options.length >= 1) {
-                set = true;
-            }
-        } else {
-            set = true;
-        }
-
-        if (cmd.disableSlash) {
-            set = false;
-        }
-        // console.log(command, "\n", set, "\n", cmd)
-
-        var commandData = cmd.slashOptions;
-        commandData["name"] = cmd.name;
-        commandData["description"] = `${descriptionParsed}`;
-        if (set) {
-            if (command) {
-                await command.delete();
-            }
-            await client.application.commands.create(commandData);
-        }
-        return true;
-    });
+    await client.commands.slashReg();
+    client.isCommandRegistrationFinished = true;
     // console.log(client.locale.getString("test2", "ja"))
     var number = 0;
     setPresence();

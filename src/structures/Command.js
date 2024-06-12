@@ -7,6 +7,7 @@ export default class Command {
         this.category = cmd.category || "unknown";
         this.disableSlash = cmd.disableSlash;
         this.hide = typeof cmd.hide == "boolean" ? cmd.hide : false;
+        this.isNsfw = typeof cmd.isNsfw == "boolean" ? cmd.isNsfw : false;
         this.aliases = cmd.aliases || [];
         this.exec = cmd.exec;
         this.slashOptions = cmd.slashOptions || {};

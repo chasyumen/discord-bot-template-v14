@@ -7,6 +7,7 @@ export async function run (interaction) {
     if (!interaction.inGuild()) {
         return;
     }
+    if (!client.isCommandRegistrationFinished) return;
     // var sData = await interaction.guild.getdb();
     // var uData = await interaction.user.getdb();
     if (!interaction.channel.type == "0") return;
@@ -35,8 +36,8 @@ export async function run (interaction) {
         }
         return executor.exec();
     } else if (interaction.type == 3) {
-        return;
-        if (!interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 14)])) return await interaction.reply(client.locale.getString("errors.permissions.bot.missingEmbed", language));
+        // return;
+        // if (!interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 14)])) return await interaction.reply(client.locale.getString("errors.permissions.bot.missingEmbed", language));
         // console.log(interaction.customId);
         if (!(interaction.message.interaction || interaction.message.reference)) return false;
         if (interaction.message.reference) {
