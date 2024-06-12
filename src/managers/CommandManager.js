@@ -29,6 +29,7 @@ export default class CommandManager extends Collection {
     async slashReg() {
         // console.log(this.client.application.commands.cache.toJSON());
         await eachSeries(this.client.application.commands.cache.toJSON(), async (cmd) => {
+            return;
             if (cmd.type !== 1) return;
             var command = this.client.commands.toJSON().find(x => x.name == cmd.name);
             // console.log(command);
@@ -41,9 +42,9 @@ export default class CommandManager extends Collection {
             return true;
         });
         await eachSeries(this.client.commands.toJSON(), async (cmd, index) => {
-            await new Promise((resolve, reject) => {
-                var set = false;
+            await new Promise(async (resolve, reject) => {
                 var command = this.client.application.commands.cache.find(x => x.name == cmd.name);
+                // console.log(cmd.name);
                 // if (typeof command == "object") {
                 //     var descriptionParsed = `${cmd.descriptions.en_US} / ${cmd.descriptions.ja}`;
                 //     if (descriptionParsed !== command.description) {
@@ -59,18 +60,24 @@ export default class CommandManager extends Collection {
                 //     set = true;
                 // }
                 let commandBuild = new SlashCommandBuilder();
-                if (!command) {
-                }
 
-
-                commandBuild.addSubcommand(subcommand =>
-                    subcommand
-                        .setName('server')
-                        .setDescription('Info about the server'));
+                commandBuild
+                    .setName(cmd.name)
+                    .setDescription(cmd.descriptions[config.defaultLanguage])
 
                 console.log(commandBuild);
 
                 //option equals function
+                
+
+                if (command) {
+                    if (ApplicationCommand.optionsEqual(command.options, commandBuild.options)) {
+                        console.log(cmd.name, "Skipped")
+                        return resolve();
+                    }
+                }
+
+                console.log(cmd.name, "Proceed")
 
                 // if (cmd.disableSlash) {
                 //     set = false;
@@ -80,12 +87,10 @@ export default class CommandManager extends Collection {
                 // var commandData = cmd.slashOptions;
                 // commandData["name"] = cmd.name;
                 // commandData["description"] = `${descriptionParsed}`;
-                // if (set) {
-                //     if (command) {
-                //         await command.delete();
-                //     }
-                //     await this.client.application.commands.create(commandData);
+                // if (command) {
+                //     await command.delete();
                 // }
+                await this.client.application.commands.create(commandBuild);
                 return setTimeout(resolve, 100)
             });
         });
