@@ -1,7 +1,7 @@
 export const name = "test3";
 export const descriptions = {
-    en_US: "test",
-    ja: "test"
+    en_US: "dir command test",
+    ja: "階層化テスト"
 };
 export const category = "dev";
 // export const aliases = [];

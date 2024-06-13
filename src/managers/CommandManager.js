@@ -6,6 +6,7 @@ import Command from "../structures/Command.js";
 import SubCommand from "../structures/SubCommand.js";
 import getDir from "../utils/getDir.js";
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "@discordjs/builders";
+import generateDescriptionArray from "../utils/generateDescriptionArray.js";
 
 export default class CommandManager extends Collection {
     constructor(client) {
@@ -100,10 +101,15 @@ export default class CommandManager extends Collection {
                 // } else {
                 //     set = true;
                 // }
+                let descriptionArray = generateDescriptionArray(cmd.descriptions);
                 let commandBuild = new SlashCommandBuilder();
                 commandBuild
                     .setName(cmd.name)
                     .setDescription(cmd.descriptions[config.defaultLanguage]);
+                    //
+                descriptionArray.forEach(loc => {
+                    commandBuild.setDescriptionLocalization(loc.locale, loc.string);
+                });
 
                 // console.log(commandBuild);
                 // console.log(cmd.subCommands);
@@ -111,9 +117,13 @@ export default class CommandManager extends Collection {
                     if (subCommand.commandType == "2") {
                         var subCommandBuilder = new SlashCommandSubcommandBuilder();
                         // console.log(subCommand)
+                        let subCommandDescriptionArray = generateDescriptionArray(cmd.descriptions);
                         subCommandBuilder
                             .setName(subCommand.name)
                             .setDescription(subCommand.descriptions[config.defaultLanguage]);
+                        subCommandDescriptionArray.forEach(loc => {
+                            subCommandBuilder.setDescriptionLocalization(loc.locale, loc.string);
+                        });
                         commandBuild.addSubcommand(subCommandBuilder);
                     }
                 });

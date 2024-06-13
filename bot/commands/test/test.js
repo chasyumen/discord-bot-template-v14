@@ -1,7 +1,7 @@
 export const name = "test";
 export const descriptions = {
-    en_US: "test",
-    ja: "test"
+    en_US: "This is a test command.",
+    ja: "これはテスト用コマンドです。"
 };
 export const category = "dev";
 // export const aliases = []; //not recommended
