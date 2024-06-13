@@ -1,3 +1,4 @@
+import { Collection } from "discord.js";
 import CommandExecute from "./CommandExecute.js";
 
 export default class Command {
@@ -5,7 +6,11 @@ export default class Command {
         this.name = cmd.name;
         this.descriptions = cmd.descriptions;
         this.category = cmd.category || "unknown";
-        this.disableSlash = cmd.disableSlash;
+        this.commandType = cmd.commandType || "1";
+        this.parentCommand = cmd.parentCommand || null;
+        this.parentGroup = cmd.parentGroup;
+        this.subCommands = new Collection();
+        // this.disableSlash = cmd.disableSlash;
         this.hide = typeof cmd.hide == "boolean" ? cmd.hide : false;
         this.isNsfw = typeof cmd.isNsfw == "boolean" ? cmd.isNsfw : false;
         this.aliases = cmd.aliases || [];
@@ -15,10 +20,14 @@ export default class Command {
     }
 
     createDescriptionRow(lang) {
-        return {raw: `${this.name} | ${this.descriptions[lang]}`, formatted: `\`${this.name}\` | ${this.descriptions[lang]}`}
+        return {raw: `/${this.name} | ${this.descriptions[lang]}`, formatted: `\`/${this.name}\` | ${this.descriptions[lang]}`}
     }
 
     executor(interaction, info) {
-        return new CommandExecute(this, interaction, info);
+        if (this.subCommands.size == 0) {
+            return new CommandExecute(this, interaction, info);
+        } else {
+            throw new Error("command with subcommands does not support running base command")
+        }
     }
 }

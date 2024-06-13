@@ -3,8 +3,9 @@ import { readdir } from "fs";
 import { join, resolve } from "path";
 import { eachSeries } from "async";
 import Command from "../structures/Command.js";
+import SubCommand from "../structures/SubCommand.js";
 import getDir from "../utils/getDir.js";
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "@discordjs/builders";
 
 export default class CommandManager extends Collection {
     constructor(client) {
@@ -13,17 +14,57 @@ export default class CommandManager extends Collection {
         this.aliases = new Collection();
     }
 
+    /**
+     * コマンドを読み込みます
+     * ファイル名は自由です
+     * @returns {null};
+     */
+
     async loadAll() {
-        var aliases = this.aliases;
+        var manager = this;
+        var aliases = manager.aliases;
         const cmds = await getDir(`./bot/commands`);//await new Promise(resolve => readdir("./bot/commands",(error, result) => resolve(result)));
-        return cmds.filter(x => x.endsWith('.js')).forEach(async file => {
+        // console.log(cmds.map(cmd=>cmd.split("./bot/commands/")[1]));
+        var subCommands = {};
+        var subCommandGroups = {};
+        var filtered = cmds.filter(x => x.endsWith('.js'));
+        await eachSeries(filtered, async file => {
             let command_raw = await import("../../" + file);//join("../../bot/commands", file)
-            let command = new Command(command_raw);
-            this.set(command.name, command);
-            command.aliases.forEach((alias) => {
-                aliases.set(alias, command.name);
+            if (command_raw.commandType == "1") {
+                var command = new Command(command_raw);
+                this.set(command.name, command);
+                command.aliases.forEach((alias) => {
+                    aliases.set(alias, command.name);
+                });
+            } else if (command_raw.commandType == "2") {
+                var command = new SubCommand(command_raw);
+                if (command.parentCommand) {
+                    if (!subCommands[command.parentCommand]) {
+                        subCommands[command.parentCommand] = [];
+                    }
+                    subCommands[command.parentCommand].push(command);
+                }
+            } else if (command_raw.commandType == "3") {
+                // var command = new SubCommand(command_raw);
+            } else {
+                
+            }
+        });
+        Object.keys(subCommands).forEach((key) => {
+            var array = subCommands[key];
+            // console.log(key)
+            array.forEach((cmd) => {
+                // console.log(cmd);
+                if (cmd.parentGroup) {
+                    var command = command.subCommands.get(cmd.parentGroup);
+                } else {
+                    var command = manager.get(cmd.parentCommand);
+                }
+                command.subCommands.set(cmd.name, cmd);
             });
         });
+        // console.log(this.toJSON());
+        return;
     }
 
     async slashReg() {
@@ -60,24 +101,36 @@ export default class CommandManager extends Collection {
                 //     set = true;
                 // }
                 let commandBuild = new SlashCommandBuilder();
-
                 commandBuild
                     .setName(cmd.name)
-                    .setDescription(cmd.descriptions[config.defaultLanguage])
+                    .setDescription(cmd.descriptions[config.defaultLanguage]);
 
-                console.log(commandBuild);
-
+                // console.log(commandBuild);
+                // console.log(cmd.subCommands);
+                cmd.subCommands.forEach((subCommand) => {
+                    if (subCommand.commandType == "2") {
+                        var subCommandBuilder = new SlashCommandSubcommandBuilder();
+                        // console.log(subCommand)
+                        subCommandBuilder
+                            .setName(subCommand.name)
+                            .setDescription(subCommand.descriptions[config.defaultLanguage]);
+                        commandBuild.addSubcommand(subCommandBuilder);
+                    }
+                });
+                // commandBuild.addSubcommand()
                 //option equals function
                 
 
-                if (command) {
-                    if (ApplicationCommand.optionsEqual(command.options, commandBuild.options)) {
-                        console.log(cmd.name, "Skipped")
-                        return resolve();
-                    }
-                }
+                // if (command) {
+                //     if (ApplicationCommand.optionsEqual(command.options, commandBuild.options)) {
+                //         console.log(cmd.name, "Skipped");
+                //         return resolve(false);
+                //     }
+                // }
 
-                console.log(cmd.name, "Proceed")
+                // console.log(command.options, commandBuild.options)
+
+                // console.log(cmd.name, "Proceed")
 
                 // if (cmd.disableSlash) {
                 //     set = false;
@@ -87,11 +140,12 @@ export default class CommandManager extends Collection {
                 // var commandData = cmd.slashOptions;
                 // commandData["name"] = cmd.name;
                 // commandData["description"] = `${descriptionParsed}`;
-                // if (command) {
-                //     await command.delete();
-                // }
-                await this.client.application.commands.create(commandBuild);
-                return setTimeout(resolve, 100)
+                if (command) {
+                    await this.client.application.commands.edit(command, commandBuild);
+                } else {
+                    await this.client.application.commands.create(commandBuild);
+                }
+                return setTimeout(() => {resolve(true)}, 100)
             });
         });
     }

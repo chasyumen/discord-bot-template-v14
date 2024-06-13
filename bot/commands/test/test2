@@ -4,7 +4,7 @@ export const descriptions = {
     ja: "test"
 };
 export const category = "dev";
-export const aliases = ["test2"];
+// export const aliases = ["test2"];
 export const hide = true;
 export const disableSlash = false;
 export const isNsfw = false;
