@@ -28,15 +28,25 @@ export async function run (interaction) {
         }
         // console.log(info);
         if (client.commands.has(info.command)) {
-            var executor = client.commands.get(info.command).executor(interaction, info)
+            var command = client.commands.get(info.command);
         } else if (client.commands.aliases.has(info.command)) {
-            var executor = client.commands.get(client.commands.aliases.has(info.command)).executor(interaction, info)
+            var command = client.commands.get(client.commands.aliases.has(info.command));
         } else {
             return;
         }
+        if (command.subCommands.size == 0) {
+            var executor = command.executor(interaction, info);
+        } else {
+            var subCommandGroupId = interaction.options.getSubcommandGroup(false);
+            if (subCommandGroupId) return;
+            var subCommandId = interaction.options.getSubcommand();
+            var subCommand = command.subCommands.get(subCommandId)
+            var executor = subCommand.executor(interaction, info);
+            // var executor = command.executor(interaction, info);
+        }
         return executor.exec();
     } else if (interaction.type == 3) {
-        // return;
+        return;
         // if (!interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 14)])) return await interaction.reply(client.locale.getString("errors.permissions.bot.missingEmbed", language));
         // console.log(interaction.customId);
         if (!(interaction.message.interaction || interaction.message.reference)) return false;

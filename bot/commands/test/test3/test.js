@@ -18,6 +18,6 @@ export const permissions = {
     userNeeded: 8n,
 }
 export async function exec (cmd) {
-    cmd.reply("test done!");
+    cmd.reply("階層化コマンド実行成功");
     // console.log(cmd);
 }
