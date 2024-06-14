@@ -38,9 +38,14 @@ export async function run (interaction) {
             var executor = command.executor(interaction, info);
         } else {
             var subCommandGroupId = interaction.options.getSubcommandGroup(false);
-            if (subCommandGroupId) return;
-            var subCommandId = interaction.options.getSubcommand();
-            var subCommand = command.subCommands.get(subCommandId)
+            if (subCommandGroupId) {
+                var subCommandId = interaction.options.getSubcommand();
+                var subCommand = command.subCommands.get(subCommandGroupId).subCommands.get(subCommandId);
+            } else {
+                var subCommandId = interaction.options.getSubcommand();
+                var subCommand = command.subCommands.get(subCommandId);
+            }
+            
             var executor = subCommand.executor(interaction, info);
             // var executor = command.executor(interaction, info);
         }

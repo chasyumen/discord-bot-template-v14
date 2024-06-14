@@ -4,8 +4,9 @@ import { join, resolve } from "path";
 import { eachSeries } from "async";
 import Command from "../structures/Command.js";
 import SubCommand from "../structures/SubCommand.js";
+import SubCommandGroup from "../structures/SubCommandGroup.js";
 import getDir from "../utils/getDir.js";
-import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
 import generateDescriptionArray from "../utils/generateDescriptionArray.js";
 
 export default class CommandManager extends Collection {
@@ -46,18 +47,37 @@ export default class CommandManager extends Collection {
                     subCommands[command.parentCommand].push(command);
                 }
             } else if (command_raw.commandType == "3") {
-                // var command = new SubCommand(command_raw);
+                var command = new SubCommandGroup(command_raw);
+                if (command.parentCommand) {
+                    if (!subCommandGroups[command.parentCommand]) {
+                        subCommandGroups[command.parentCommand] = [];
+                    }
+                    subCommandGroups[command.parentCommand].push(command);
+                }
+                // var command = new SubCommand(command_raw); 
             } else {
                 
             }
         });
+        Object.keys(subCommandGroups).forEach((key) => {
+            var array = subCommandGroups[key];
+            // console.log(key)
+            array.forEach((cmdGroup) => {
+                // console.log(cmdGroup);
+                if (cmdGroup.parentCommand)  {
+                    var command = manager.get(cmdGroup.parentCommand);
+                }
+                command.subCommands.set(cmdGroup.name, cmdGroup);
+            });
+        });
+        // console.log(subCommandGroups)
         Object.keys(subCommands).forEach((key) => {
             var array = subCommands[key];
             // console.log(key)
             array.forEach((cmd) => {
                 // console.log(cmd);
                 if (cmd.parentGroup) {
-                    var command = command.subCommands.get(cmd.parentGroup);
+                    var command = manager.get(cmd.parentCommand).subCommands.get(cmd.parentGroup);//cmd.subCommands.get(cmd.parentGroup);
                 } else {
                     var command = manager.get(cmd.parentCommand);
                 }
@@ -65,13 +85,12 @@ export default class CommandManager extends Collection {
             });
         });
         // console.log(this.toJSON());
-        return;
+        return this;
     }
 
     async slashReg() {
         // console.log(this.client.application.commands.cache.toJSON());
         await eachSeries(this.client.application.commands.cache.toJSON(), async (cmd) => {
-            return;
             if (cmd.type !== 1) return;
             var command = this.client.commands.toJSON().find(x => x.name == cmd.name);
             // console.log(command);
@@ -125,6 +144,30 @@ export default class CommandManager extends Collection {
                             subCommandBuilder.setDescriptionLocalization(loc.locale, loc.string);
                         });
                         commandBuild.addSubcommand(subCommandBuilder);
+                    } else if (subCommand.commandType == "3") {
+                        var subCommandGroupBuilder = new SlashCommandSubcommandGroupBuilder();
+                        let subCommandGroupDescriptionArray = generateDescriptionArray(cmd.descriptions);
+                        subCommandGroupBuilder
+                            .setName(subCommand.name)
+                            .setDescription(subCommand.descriptions[config.defaultLanguage]);
+                        subCommandGroupDescriptionArray.forEach(loc => {
+                            subCommandGroupBuilder.setDescriptionLocalization(loc.locale, loc.string);
+                        });
+                        subCommand.subCommands.forEach((subCommand) => {
+                            if (subCommand.commandType == "2") {
+                                var subCommandBuilder = new SlashCommandSubcommandBuilder();
+                                // console.log(subCommand)
+                                let subCommandDescriptionArray = generateDescriptionArray(cmd.descriptions);
+                                subCommandBuilder
+                                    .setName(subCommand.name)
+                                    .setDescription(subCommand.descriptions[config.defaultLanguage]);
+                                subCommandDescriptionArray.forEach(loc => {
+                                    subCommandBuilder.setDescriptionLocalization(loc.locale, loc.string);
+                                });
+                                subCommandGroupBuilder.addSubcommand(subCommandBuilder);
+                            }
+                        });
+                        commandBuild.addSubcommandGroup(subCommandGroupBuilder);
                     }
                 });
                 // commandBuild.addSubcommand()

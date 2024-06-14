@@ -5,7 +5,7 @@ export const descriptions = {
 };
 export const category = "dev";
 // export const aliases = [];
-export const commandType = "2"; //1: BaseCommand, 2: SubCommand, 3: SubCommandGroup
+export const commandType = "3"; //1: BaseCommand, 2: SubCommand, 3: SubCommandGroup
 export const parentCommand = "test3";
 export const parentGroup = null;
 export const hide = true;
