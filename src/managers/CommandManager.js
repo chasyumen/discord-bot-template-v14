@@ -97,13 +97,14 @@ export default class CommandManager extends Collection {
             if (!command) {
                 console.log("slashDelete");
                 await cmd.delete();
-            } else if (command.disableSlash === true) {
+            } else if (command.hide === true) {
                 await cmd.delete();
             }
             return true;
         });
         await eachSeries(this.client.commands.toJSON(), async (cmd, index) => {
             await new Promise(async (resolve, reject) => {
+                if (cmd.hide == true) resolve(false);
                 var command = this.client.application.commands.cache.find(x => x.name == cmd.name);
                 // console.log(cmd.name);
                 // if (typeof command == "object") {
@@ -200,6 +201,8 @@ export default class CommandManager extends Collection {
                 }
                 return setTimeout(() => {resolve(true)}, 100)
             });
+            return;
         });
+        return false;
     }
 }

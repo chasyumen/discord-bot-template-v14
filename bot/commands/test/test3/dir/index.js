@@ -1,4 +1,4 @@
-export const name = "test3";
+export const name = "dir";
 export const descriptions = {
     en_US: "dir command test",
     ja: "階層化テスト"
