@@ -8,6 +8,7 @@ import SubCommandGroup from "../structures/SubCommandGroup.js";
 import getDir from "../utils/getDir.js";
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
 import generateDescriptionArray from "../utils/generateDescriptionArray.js";
+import registerCommandOptions from "../utils/registerCommandOptions.js";
 
 export default class CommandManager extends Collection {
     constructor(client) {
@@ -122,16 +123,16 @@ export default class CommandManager extends Collection {
                 //     set = true;
                 // }
                 let descriptionArray = generateDescriptionArray(cmd.descriptions);
-                let commandBuild = new SlashCommandBuilder();
-                commandBuild
+                let commandBuilder = new SlashCommandBuilder();
+                commandBuilder
                     .setName(cmd.name)
                     .setDescription(cmd.descriptions[config.defaultLanguage]);
                     //
                 descriptionArray.forEach(loc => {
-                    commandBuild.setDescriptionLocalization(loc.locale, loc.string);
+                    commandBuilder.setDescriptionLocalization(loc.locale, loc.string);
                 });
 
-                // console.log(commandBuild);
+                // console.log(commandBuilder);
                 // console.log(cmd.subCommands);
                 cmd.subCommands.forEach((subCommand) => {
                     if (subCommand.commandType == "2") {
@@ -144,7 +145,8 @@ export default class CommandManager extends Collection {
                         subCommandDescriptionArray.forEach(loc => {
                             subCommandBuilder.setDescriptionLocalization(loc.locale, loc.string);
                         });
-                        commandBuild.addSubcommand(subCommandBuilder);
+                        subCommandBuilder = registerCommandOptions(subCommandBuilder, subCommand.slashOptions);
+                        commandBuilder.addSubcommand(subCommandBuilder);
                     } else if (subCommand.commandType == "3") {
                         var subCommandGroupBuilder = new SlashCommandSubcommandGroupBuilder();
                         let subCommandGroupDescriptionArray = generateDescriptionArray(cmd.descriptions);
@@ -165,24 +167,27 @@ export default class CommandManager extends Collection {
                                 subCommandDescriptionArray.forEach(loc => {
                                     subCommandBuilder.setDescriptionLocalization(loc.locale, loc.string);
                                 });
+                                subCommandBuilder = registerCommandOptions(subCommandBuilder, subCommand.slashOptions);
                                 subCommandGroupBuilder.addSubcommand(subCommandBuilder);
                             }
                         });
-                        commandBuild.addSubcommandGroup(subCommandGroupBuilder);
+                        commandBuilder.addSubcommandGroup(subCommandGroupBuilder);
                     }
                 });
-                // commandBuild.addSubcommand()
+
+                commandBuilder = registerCommandOptions(commandBuilder, cmd.slashOptions);
+                // commandBuilder.addSubcommand()
                 //option equals function
                 
 
                 // if (command) {
-                //     if (ApplicationCommand.optionsEqual(command.options, commandBuild.options)) {
+                //     if (ApplicationCommand.optionsEqual(command.options, commandBuilder.options)) {
                 //         console.log(cmd.name, "Skipped");
                 //         return resolve(false);
                 //     }
                 // }
 
-                // console.log(command.options, commandBuild.options)
+                // console.log(command.options, commandBuilder.options)
 
                 // console.log(cmd.name, "Proceed")
 
@@ -195,9 +200,9 @@ export default class CommandManager extends Collection {
                 // commandData["name"] = cmd.name;
                 // commandData["description"] = `${descriptionParsed}`;
                 if (command) {
-                    await this.client.application.commands.edit(command, commandBuild);
+                    await this.client.application.commands.edit(command, commandBuilder);
                 } else {
-                    await this.client.application.commands.create(commandBuild);
+                    await this.client.application.commands.create(commandBuilder);
                 }
                 return setTimeout(() => {resolve(true)}, 100)
             });
