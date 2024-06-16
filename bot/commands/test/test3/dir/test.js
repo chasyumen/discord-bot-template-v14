@@ -1,10 +1,12 @@
+import { PermissionFlagsBits } from "discord.js";
+
 export const name = "test3";
 export const descriptions = {
     en_US: "dir command test",
     ja: "階層化テスト"
 };
 export const commandType = "2"; //1: BaseCommand, 2: SubCommand, 3: SubCommandGroup
-export const parentCommand = "test3";
+export const parentCommand = "test34";
 export const parentGroup = "dir";
 export const slashOptions = [];
 export const permissions = {

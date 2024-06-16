@@ -157,7 +157,7 @@ export default class CommandManager extends Collection {
                             subCommandGroupBuilder.setDescriptionLocalization(loc.locale, loc.string);
                         });
                         subCommand.subCommands.forEach((subCommand2) => {
-                            if (subCommand.commandType == "2") {
+                            if (subCommand2.commandType == "2") {
                                 var subCommandBuilder = new SlashCommandSubcommandBuilder();
                                 // console.log(subCommand)
                                 let subCommandDescriptionArray = generateDescriptionArray(cmd.descriptions);
@@ -193,7 +193,6 @@ export default class CommandManager extends Collection {
                     var finalperm = null;
                 }
                 commandBuilder.setDefaultMemberPermissions(finalperm);
-                
                 if (command) {
                     await this.client.application.commands.edit(command, commandBuilder);
                 } else {

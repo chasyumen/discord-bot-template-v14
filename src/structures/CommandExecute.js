@@ -92,18 +92,35 @@ export default class CommandExecute {
         // console.log(permission);
         
         if (InternalPermissions.has(this.command.permissions.internal)) {
-            if (!this.interaction.channel.permissionsFor((await this.interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await this.interaction.reply({ content: `<#${this.interaction.channel.id}> 内でBotがメッセージを閲覧する権限または(埋め込み)メッセージを送る権限がありません。`, ephemeral: true });
+            // if (!this.interaction.channel.permissionsFor((await this.interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await this.interaction.reply({ content: client.locale.getString("errors.permissions.bot.minimum", language).replace(/!{channel}/g, `<#${this.interaction.channel.id}>`), ephemeral: true });
             var botChannelPermission = new ExtendedPermissionsBitField(this.interaction.channel.permissionsFor(await this.interaction.guild.members.fetchMe()).bitfield);
             var botGuildPermission = new ExtendedPermissionsBitField(this.interaction.guild.members.me.permissions.bitfield);
+            var requiredChannel = new ExtendedPermissionsBitField(this.command.permissions.botNeededInChannel);
+            var requiredGuild = new ExtendedPermissionsBitField(this.command.permissions.botNeededInGuild);
+            // var merged = requiredChannel.add(requiredGuild);
             if (!botGuildPermission.has(this.command.permissions.botNeededInGuild)) {
-                console.log(botGuildPermission.missing(this.command.permissions.botNeededInGuild).toString())
-                return await this.interaction.reply({ content: botGuildPermission.missing(this.command.permissions.botNeededInGuild).toString(), ephemeral: true });
+                var permissions = [];
+                botGuildPermission.missing(this.command.permissions.botNeededInGuild).forEach(perm => {
+                    permissions.push(client.locale.getString(`permissions.${perm}`, language));
+                })
+                return await this.interaction.reply({ content: client.locale.getString("errors.permissions.bot.any", language).replace(/!{permissions}/g, permissions.toString()), ephemeral: true });
             }
-            //Also I detected that these permissions are assigned as guild permissions and not CHANNEL permission which might have been overridden to be disabled. Please make sure to assign these permissions as channel permission.(not guild permission) {permission}
-            //ギルド本体で与えられていてもチャンネルで与えられていない場合の例外処理+親切に教えてあげましょう
-            //if (!this.interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has(this.command.permissions.botNeeded))
-            // ↑↑↑要多言語対応化↑↑↑
-            //ユーザー側の権限チェックを追加
+            if (!botChannelPermission.has(this.command.permissions.botNeededInChannel)) {
+                var permissions = [];
+                var rawPerm = botGuildPermission.toArray();
+                var channelErrorPermissions = [];
+                botChannelPermission.missing(this.command.permissions.botNeededInChannel).forEach(perm => {
+                    if (rawPerm.includes(perm)) {
+                        channelErrorPermissions.push(client.locale.getString(`permissions.${perm}`, language));
+                    }
+                    permissions.push(client.locale.getString(`permissions.${perm}`, language));
+                });
+                if (channelErrorPermissions.length == 0) {
+                    return await this.interaction.reply({ content: client.locale.getString("errors.permissions.bot.any_channel2", language).replace(/!{permissions}/g, permissions.toString()), ephemeral: true });
+                }
+                return await this.interaction.reply({ content: client.locale.getString("errors.permissions.bot.any_channel", language).replace(/!{permissions}/g, permissions.toString()).replace(/!{permissions2}/g, channelErrorPermissions.toString()), ephemeral: true });
+            }
+            //TODOユーザー側の権限チェックを追加
             return await this.command.exec(this, this.interaction);
         } else {
             return await this.reply({ content: client.locale.getString("errors.permissions.user.internalPermission", language), ephemeral: true });

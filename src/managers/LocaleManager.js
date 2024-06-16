@@ -2,6 +2,8 @@ import { Collection } from "discord.js";
 import { readdir } from "fs";
 import { get } from "http";
 import { join } from "path";
+import getDir from "../utils/getDir.js";
+import { eachSeries } from "async";
 
 export default class LocaleManager extends Collection {
     constructor(client) {
@@ -15,11 +17,31 @@ export default class LocaleManager extends Collection {
     }
 
     async loadAll() {
-        const locales = await new Promise(resolve => readdir("./src/locale",(error, result) => resolve(result)));
-        return locales.filter(x => x.endsWith('.js')).forEach(async file => {
-            let locale = await import("../locale/"+file);
-            this.set(locale.name, locale);
-            this.list.push(locale.name)
+        // const locales = await new Promise(resolve => readdir("./src/locale",(error, result) => resolve(result)));
+        var manager = this;
+        const locales = await getDir(`./src/locale`);
+        var localeData = {};
+        var filtered = locales.filter(x => x.endsWith('.js'))
+        await eachSeries(filtered, async file => {
+            var dirnm = file.split("src/locale/")[1]
+            let locale = await import("../locale/"+dirnm);
+            if (!localeData[locale.language]) {
+                localeData[locale.language] = {name: locale.language, data: {}};
+            }
+            Object.keys(locale.data).forEach(key => {
+                if (localeData[locale.language].data[key]) {
+                    localeData[locale.language].data[key].concat(locale.data[key])
+                } else {
+                    localeData[locale.language].data[key] = locale.data[key];
+                }
+            });
+            // this.set(locale.name, locale);
+            // this.list.push(locale.name);
+        });
+        // console.log(localeData);
+        Object.keys(localeData).forEach(locale => {
+            manager.set(locale, localeData[locale]);
+            manager.list.push(locale);
         });
     }
 
