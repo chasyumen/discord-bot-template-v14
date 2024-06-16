@@ -156,18 +156,18 @@ export default class CommandManager extends Collection {
                         subCommandGroupDescriptionArray.forEach(loc => {
                             subCommandGroupBuilder.setDescriptionLocalization(loc.locale, loc.string);
                         });
-                        subCommand.subCommands.forEach((subCommand) => {
+                        subCommand.subCommands.forEach((subCommand2) => {
                             if (subCommand.commandType == "2") {
                                 var subCommandBuilder = new SlashCommandSubcommandBuilder();
                                 // console.log(subCommand)
                                 let subCommandDescriptionArray = generateDescriptionArray(cmd.descriptions);
                                 subCommandBuilder
-                                    .setName(subCommand.name)
-                                    .setDescription(subCommand.descriptions[config.defaultLanguage]);
+                                    .setName(subCommand2.name)
+                                    .setDescription(subCommand2.descriptions[config.defaultLanguage]);
                                 subCommandDescriptionArray.forEach(loc => {
                                     subCommandBuilder.setDescriptionLocalization(loc.locale, loc.string);
                                 });
-                                subCommandBuilder = registerCommandOptions(subCommandBuilder, subCommand.slashOptions);
+                                subCommandBuilder = registerCommandOptions(subCommandBuilder, subCommand2.slashOptions);
                                 subCommandGroupBuilder.addSubcommand(subCommandBuilder);
                             }
                         });
