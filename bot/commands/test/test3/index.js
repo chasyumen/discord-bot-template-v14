@@ -4,7 +4,6 @@ export const descriptions = {
     ja: "test"
 };
 export const category = "dev";
-// export const aliases = [];
 export const commandType = "1"; //1: BaseCommand, 2: SubCommand, 3: SubCommandGroup
 export const parentCommand = null;
 export const parentGroup = null;

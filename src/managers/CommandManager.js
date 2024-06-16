@@ -176,29 +176,24 @@ export default class CommandManager extends Collection {
                 });
 
                 commandBuilder = registerCommandOptions(commandBuilder, cmd.slashOptions);
-                // commandBuilder.addSubcommand()
-                //option equals function
+
+                //DMでの利用OK or NG
+                commandBuilder.setDMPermission(cmd.dm);
+
+                //デフォルト権限set up
+                if (typeof cmd.permissions.userNeeded == "object") {
+                    var finalperm = 0n;
+                    cmd.permissions.userNeeded.forEach(perm => {
+                        return finalperm = finalperm+perm;
+                    });
+                } else {
+                    var finalperm = cmd.permissions.userNeeded;
+                }
+                if (finalperm == 0) {
+                    var finalperm = null;
+                }
+                commandBuilder.setDefaultMemberPermissions(finalperm);
                 
-
-                // if (command) {
-                //     if (ApplicationCommand.optionsEqual(command.options, commandBuilder.options)) {
-                //         console.log(cmd.name, "Skipped");
-                //         return resolve(false);
-                //     }
-                // }
-
-                // console.log(command.options, commandBuilder.options)
-
-                // console.log(cmd.name, "Proceed")
-
-                // if (cmd.disableSlash) {
-                //     set = false;
-                // }
-                // console.log(command, "\n", set, "\n", cmd)
-
-                // var commandData = cmd.slashOptions;
-                // commandData["name"] = cmd.name;
-                // commandData["description"] = `${descriptionParsed}`;
                 if (command) {
                     await this.client.application.commands.edit(command, commandBuilder);
                 } else {

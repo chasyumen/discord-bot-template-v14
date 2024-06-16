@@ -10,13 +10,14 @@ export default class Command {
         this.parentCommand = null;
         this.parentGroup = null;
         this.subCommands = new Collection();
+        this.dm = typeof cmd.dm == "boolean" ? cmd.dm : false;
         // this.disableSlash = cmd.disableSlash;
         this.hide = typeof cmd.hide == "boolean" ? cmd.hide : false;
         this.isNsfw = typeof cmd.isNsfw == "boolean" ? cmd.isNsfw : false;
         this.aliases = cmd.aliases || [];
         this.exec = cmd.exec;
         this.slashOptions = cmd.slashOptions || [];
-        this.permissions = cmd.permissions;
+        this.permissions = cmd.permissions || {};
     }
 
     createDescriptionRow(lang) {
