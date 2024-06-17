@@ -11,6 +11,7 @@ export const data = {
                 "any_channel2": "権限不足です。下記の権限がチャンネルに付与されているかご確認ください。\n```!{permissions}```"
             },
             "user": {
+                "any": "権限不足です、あなたが以下の権限を保有しているか確認してください。\n```!{permissions}```",
                 "manageGuild": "このコマンドへアクセスするにはサーバー管理権限を保有している必要があります。",
                 "internalPermission": "このコマンドへのアクセスが拒否されました。"
             }

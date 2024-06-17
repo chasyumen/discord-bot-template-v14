@@ -15,7 +15,7 @@ export const hide = false;
 export const isNsfw = false;
 export const slashOptions = [];
 export const permissions = {
-    internal: ["Tester"],
+    internal: [],
     botNeededInChannel: [PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageChannels],
     botNeededInGuild: 0n,
     userNeeded: [PermissionFlagsBits.ManageGuild],

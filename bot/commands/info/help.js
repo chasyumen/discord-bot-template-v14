@@ -84,7 +84,7 @@ export async function exec (cmd) {
         if (client.commands.has(command)) {
             var commandInfo = client.commands.get(command);
             var embed = {
-                title: command + client.locale.getString("commands.help.command.title", language),
+                title:  client.locale.getString("commands.help.command.title", language).replace(/!{command}/g, command),
                 color: config.colors.default_color,
                 description: commandInfo.description[language],
                 footer: {

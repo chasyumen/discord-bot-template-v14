@@ -86,8 +86,14 @@ export default class CommandManager extends Collection {
             });
         });
         // console.log(this.toJSON());
-        return this;
+        return this.toJSON;
     }
+
+    /**
+     * 
+     * スラッシュコマンドを登録
+     * @returns {false}
+     */
 
     async slashReg() {
         // console.log(this.client.application.commands.cache.toJSON());

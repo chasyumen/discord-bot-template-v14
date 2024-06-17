@@ -1,4 +1,5 @@
 export default {
+    "botName": "DBTV14",
     "colors": {
         "default_color": 65535,
         "error_color": 16711680,

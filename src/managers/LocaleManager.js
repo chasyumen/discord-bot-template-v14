@@ -43,16 +43,18 @@ export default class LocaleManager extends Collection {
             manager.set(locale, localeData[locale]);
             manager.list.push(locale);
         });
+        return;
     }
 
     getString(id, lang) {
         if (!lang) lang = config.defaultLanguage;
         if (!this.has(lang)) lang = config.defaultLanguage;
-        var locale = this.get(lang);
-        var localeData = locale.data;
         var defaultLocale = this.get(config.defaultLanguage);
         var defaultLocaleData = defaultLocale.data;
         var defaultLang = config.defaultLanguage;
+
+        var locale = this.get(lang);
+        var localeData = (defaultLocaleData).concat(locale.data);
 
         if (!id) return id;
 
@@ -67,6 +69,8 @@ export default class LocaleManager extends Collection {
                     return json;
                 }
             } else if (typeof json !== "object") {
+                return id;
+            } else if (typeof json == "undefined") {
                 return id;
             } else {
                 var nData = json[spl[0]]

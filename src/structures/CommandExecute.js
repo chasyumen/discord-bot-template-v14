@@ -92,11 +92,12 @@ export default class CommandExecute {
         // console.log(permission);
         
         if (InternalPermissions.has(this.command.permissions.internal)) {
+            var checkUserPermissions = true; //guildDb.get checkUserPermissions
             // if (!this.interaction.channel.permissionsFor((await this.interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await this.interaction.reply({ content: client.locale.getString("errors.permissions.bot.minimum", language).replace(/!{channel}/g, `<#${this.interaction.channel.id}>`), ephemeral: true });
             var botChannelPermission = new ExtendedPermissionsBitField(this.interaction.channel.permissionsFor(await this.interaction.guild.members.fetchMe()).bitfield);
             var botGuildPermission = new ExtendedPermissionsBitField(this.interaction.guild.members.me.permissions.bitfield);
-            var requiredChannel = new ExtendedPermissionsBitField(this.command.permissions.botNeededInChannel);
-            var requiredGuild = new ExtendedPermissionsBitField(this.command.permissions.botNeededInGuild);
+            // var requiredChannel = new ExtendedPermissionsBitField(this.command.permissions.botNeededInChannel);
+            // var requiredGuild = new ExtendedPermissionsBitField(this.command.permissions.botNeededInGuild);
             // var merged = requiredChannel.add(requiredGuild);
             if (!botGuildPermission.has(this.command.permissions.botNeededInGuild)) {
                 var permissions = [];
@@ -119,6 +120,18 @@ export default class CommandExecute {
                     return await this.interaction.reply({ content: client.locale.getString("errors.permissions.bot.any_channel2", language).replace(/!{permissions}/g, permissions.toString()), ephemeral: true });
                 }
                 return await this.interaction.reply({ content: client.locale.getString("errors.permissions.bot.any_channel", language).replace(/!{permissions}/g, permissions.toString()).replace(/!{permissions2}/g, channelErrorPermissions.toString()), ephemeral: true });
+            }
+
+            if (this.interaction.inGuild() && checkUserPermissions) {
+                // console.log("checkuser")
+                if (!this.interaction.member.permissions.has(this.command.permissions.userNeeded)) {
+                    // console.log("error detect")
+                    var permissions = [];
+                    this.interaction.member.permissions.missing(this.command.permissions.userNeeded).forEach(perm => {
+                        permissions.push(client.locale.getString(`permissions.${perm}`, language));
+                    })
+                    return await this.interaction.reply({ content: client.locale.getString("errors.permissions.user.any", language).replace(/!{permissions}/g, permissions.toString()), ephemeral: true });
+                }
             }
             //TODOユーザー側の権限チェックを追加
             return await this.command.exec(this, this.interaction);

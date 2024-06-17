@@ -11,6 +11,7 @@ export const data = {
                 "any_channel2": "Bot doesn't have enough (channel) permissions to run this command!\n```!{permissions}```"
             },
             "user": {
+                "any": "You don't have enough permissions to run this command!\n```!{permissions}```",
                 "manageGuild": "You need manage guild permission to use that command.",
                 "internalPermission": "Access to this command has been denied."
             }
