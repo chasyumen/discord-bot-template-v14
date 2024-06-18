@@ -12,6 +12,7 @@ export async function run () {
     await client.application.commands.fetch();
     await client.commands.slashReg();
     client.isCommandRegistrationFinished = true;
+    console.log(`Initializing process completed.`);
     // console.log(client.locale.getString("test2", "ja"))
     var number = 0;
     setPresence();

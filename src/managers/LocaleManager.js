@@ -4,6 +4,7 @@ import { get } from "http";
 import { join } from "path";
 import getDir from "../utils/getDir.js";
 import { eachSeries } from "async";
+import jsonDeepMerge from "../utils/jsonDeepMerge.js";
 
 export default class LocaleManager extends Collection {
     constructor(client) {
@@ -54,7 +55,7 @@ export default class LocaleManager extends Collection {
         var defaultLang = config.defaultLanguage;
 
         var locale = this.get(lang);
-        var localeData = (defaultLocaleData).concat(locale.data);
+        var localeData = jsonDeepMerge(defaultLocaleData, locale.data);
 
         if (!id) return id;
 

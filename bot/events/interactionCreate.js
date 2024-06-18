@@ -12,10 +12,10 @@ export async function run (interaction) {
     // var uData = await interaction.user.getdb();
     if (!interaction.channel.type == "0") return;
     var language = config.defaultLanguage;//uData.language;
-    // console.log(interaction.type);
+    language = interaction.locale.replace(/-/g, "_");
+        // console.log(interaction.type);
     if (interaction.type == 2) {
         // console.log()
-        language = interaction.locale;
         // if (!client.cooldowns.command.checkUser(interaction.user, interaction.commandName).state) return;
         // client.cooldowns.command.add(interaction.user, interaction.guild, interaction.commandName);
         // if (!interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await interaction.reply({ content: `<#${interaction.channel.id}> 内でBotがメッセージを閲覧する権限または(埋め込み)メッセージを送る権限がありません。`, ephemeral: true });
@@ -53,7 +53,8 @@ export async function run (interaction) {
         }
         return executor.exec();
     } else if (interaction.type == 3) {
-        return;
+        // language = interaction.locale;
+        // return;
         // if (!interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 14)])) return await interaction.reply(client.locale.getString("errors.permissions.bot.missingEmbed", language));
         // console.log(interaction.customId);
         if (!(interaction.message.interaction || interaction.message.reference)) return false;
@@ -74,20 +75,21 @@ export async function run (interaction) {
         var info = {
             command: interaction.customId.match(/:/) ? interaction.customId.split(":")[0] : interaction.customId,
             // option: message.content.slice(prefix.length).slice(message.content.slice(prefix.length).split(" ")[0].length+1),
-            // options: interaction.options,
+            options: interaction.options,
             // isSlash: true,
-            language: uData.language,
+            language: language,
             userId: uID
             // permission: await client.permissions.get(message.author.id),
             // serverData: sData,
             // channelData: await message.channel.getdb(),
             // userData: await message.author.getdb()
         }
-        if (client.messagecomponents.has(info.command)) {
-            var cmd = client.messagecomponents.get(info.command);
+        if (client.messageComponents.has(info.command)) {
+            var cmd = client.messageComponents.get(info.command);
             if (cmd.type == interaction.component.type) {
-                return await client.messagecomponents.run(info.command, interaction, info);
+                var executor = cmd.executor(interaction, info);
                 // return await cmd.exec(interaction);
+                return executor.exec();
             } else {
                 return interaction.reply({content: "Interaction Failed.", ephemeral: true});
             }

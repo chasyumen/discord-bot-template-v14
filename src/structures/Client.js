@@ -2,7 +2,7 @@ import { Client, Collection } from "discord.js";
 import LocaleManager from "../managers/LocaleManager.js";
 import EventManager from "../managers/EventManager.js";
 import CommandManager from "../managers/CommandManager.js";
-// import MessageComponentManager from "../managers/MessageComponentManager.js";
+import MessageComponentManager from "../managers/MessageComponentManager.js";
 // const MessageComponentManager = require("../managers/MessageComponentManager.js");
 // const VoiceManager = require("../managers/VoicePlayerManager.js");
 // const Database = require("../database/index.js");
@@ -15,7 +15,7 @@ export default class CustomClient extends Client {
         this.events = new EventManager(this);
         this.commands = new CommandManager(this);
         this.isCommandRegistrationFinished = undefined;
-        // this.messagecomponents = new MessageComponentManager(this);
+        this.messageComponents = new MessageComponentManager(this);
         // this.cooldowns = new CooldownManager(this);
         // this.db = new Database();
         // this.players = new VoiceManager(this);
@@ -25,7 +25,7 @@ export default class CustomClient extends Client {
         await this.locale.loadAll();
         await this.commands.loadAll();
         this.isCommandRegistrationFinished = false;
-        // await this.messagecomponents.loadAll();
+        await this.messageComponents.loadAll();
         await this.events.loadAll();
         // await this.db.connect(process.env.MONGO_URL);
         // await this.db.load_models();
