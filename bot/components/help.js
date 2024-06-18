@@ -41,7 +41,7 @@ export async function exec (cmd) {
         await async2.eachSeries(client.commands.toJSON().filter(x => !x.hide), async (cmd) => {
             if (!categories.find(x => x.id == cmd.category)) {
                 if (!config.commandCategory[cmd.category]) {
-                    var emoji = "🤖";
+                    var emoji = {"name": "🤖"};
                     var order = 0;
                 } else {
                     var emoji = config.commandCategory[cmd.category].emoji;
@@ -63,7 +63,7 @@ export async function exec (cmd) {
         await new Promise(resolve => setTimeout(resolve, 100));
         // console.log(categories);
         await async2.eachSeries(categories, async (category) => {
-            categories_text = `${categories_text}\n${category.emoji}/\`${category.name}\` | ${category.description}`
+            categories_text = `${categories_text}\n${category.emoji.name}/\`${category.name}\` | ${category.description}`
         });
         var embed = {
             title: client.locale.getString("commands.help.title", language),
