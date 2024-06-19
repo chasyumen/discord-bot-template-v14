@@ -17,6 +17,7 @@ export async function run () {
     var number = 0;
     setPresence();
     setInterval(setPresence, 10000);
+    // client.fetchClientValues("client.guilds.cache.size");
     async function setPresence() {
         var presences = [
             { name: `Discord Bot Template v14 | Version: ${JSON.parse(readFileSync("./package.json").toString()).version}`, type: 0 },
