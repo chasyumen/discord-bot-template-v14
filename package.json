@@ -1,6 +1,6 @@
 {
   "name": "discord-bot-template-v14",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "discord bot template",
   "type": "module",
   "main": "./index.js",
