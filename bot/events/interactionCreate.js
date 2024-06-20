@@ -1,5 +1,6 @@
 export const name = "interactionCreate";
 export const event = "interactionCreate";
+export const once = false;
 
 export async function run (interaction) {
     if (interaction.user.id == client.user.id) return;

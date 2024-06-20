@@ -13,9 +13,15 @@ export default class EventManager extends Collection {
         return events.filter(x => x.endsWith('.js')).forEach(async file => {
             let event = await import("../../bot/events/"+file);
             this.set(event.name, event);
-            this.client.on(event.event, async function (...a) {
-                return await event.run(...a);
-            });
+            if (event.once) {
+                this.client.once(event.event, async function (...a) {
+                    return await event.run(...a);
+                });
+            } else {
+                this.client.on(event.event, async function (...a) {
+                    return await event.run(...a);
+                });
+            }
         });
     }
 }

@@ -12,9 +12,12 @@ process.on("unhandledRejection", console.error);
 
 shards.on("shardCreate", shard => {
 	// Listeing for the ready event on shard.
-	console.log("shard create")
+	shards.log("LOG", "shard create: ", shard.id);
+	// console.log("shard create");
 	shard.on("ready", async () => {
-
+		// shard.send({type: "shardId", data: shard.id});
+		// console.log("shardid", shard.id);
+		// shard.send({type: "shardId", data: shard.id});
 	});
 	shard.on("message", async (message) => {
 		if (!message) return;
@@ -22,7 +25,17 @@ shards.on("shardCreate", shard => {
 		if (!message.type) return;
 	});
 });
+
+async function fetchGuilds() {
+	var guilds = await shards.fetchClientValues("guilds.cache.size").then((shardGuilds) => {return shardGuilds.reduce((a, b) => {return a + b})});
+	shards.shards.map((shard) => shard.send({ type: "guildCount", data: guilds }));
+	// console.log(guilds);
+}
+
 (async () => {
 	// await database.connect(process.env.MONGO_URL);
-	await shards.start();
+	await shards.start({amount: 3, delay: 5000});
+	await fetchGuilds();
+	shards.fetchGuildsInterval = setInterval(fetchGuilds, 20000);
+	shards.shards.map((shard) => shard.send({ type: "allShardsReady" }));
 })();

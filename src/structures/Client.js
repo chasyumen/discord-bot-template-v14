@@ -3,6 +3,7 @@ import LocaleManager from "../managers/LocaleManager.js";
 import EventManager from "../managers/EventManager.js";
 import CommandManager from "../managers/CommandManager.js";
 import MessageComponentManager from "../managers/MessageComponentManager.js";
+import formatLogger from "../utils/formatLogger.js";
 // const MessageComponentManager = require("../managers/MessageComponentManager.js");
 // const VoiceManager = require("../managers/VoicePlayerManager.js");
 // const Database = require("../database/index.js");
@@ -16,6 +17,7 @@ export default class CustomClient extends Client {
         this.commands = new CommandManager(this);
         this.isCommandRegistrationFinished = undefined;
         this.messageComponents = new MessageComponentManager(this);
+        this.log = formatLogger("BOT")
         // this.cooldowns = new CooldownManager(this);
         // this.db = new Database();
         // this.players = new VoiceManager(this);
