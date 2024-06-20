@@ -20,6 +20,8 @@ const client = (global.client = new Client({
     },
 }));
 
+process.on("message", (...msg) => client.emit("processMessage", ...msg));
+
 Discord.TextChannel.prototype.fetchMessages = async function (number) {
     if (!this.isText()) return false;
     var messages = new Collection();
