@@ -34,7 +34,8 @@ async function fetchGuilds() {
 
 (async () => {
 	// await database.connect(process.env.MONGO_URL);
-	await shards.start({amount: 3, delay: 5000});
+	// await shards.start({amount: 3, delay: 5000});
+	await shards.start();
 	await fetchGuilds();
 	shards.fetchGuildsInterval = setInterval(fetchGuilds, 20000);
 	shards.shards.map((shard) => shard.send({ type: "allShardsReady" }));
