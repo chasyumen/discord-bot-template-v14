@@ -30,9 +30,10 @@ export default class CommandManager extends Collection {
         // console.log(cmds.map(cmd=>cmd.split("./bot/commands/")[1]));
         var subCommands = {};
         var subCommandGroups = {};
-        var filtered = cmds.filter(x => x.endsWith('.js'));
+        var filtered = cmds.filter(x => x.endsWith('.js') || x.endsWith('.cjs'));
         await eachSeries(filtered, async file => {
             let command_raw = await import("../../" + file);//join("../../bot/commands", file)
+            if (command_raw.default) command_raw = command_raw.default;
             if (command_raw.commandType == "1") {
                 var command = new Command(command_raw);
                 this.set(command.name, command);
