@@ -35,13 +35,13 @@ export default class CommandManager extends Collection {
             let command_raw = await import("../../" + file);//join("../../bot/commands", file)
             if (command_raw.default) command_raw = command_raw.default;
             if (command_raw.commandType == "1") {
-                var command = new Command(command_raw);
+                var command = new Command(command_raw, this.client);
                 this.set(command.name, command);
                 command.aliases.forEach((alias) => {
                     aliases.set(alias, command.name);
                 });
             } else if (command_raw.commandType == "2") {
-                var command = new SubCommand(command_raw);
+                var command = new SubCommand(command_raw, this.client);
                 if (command.parentCommand) {
                     if (!subCommands[command.parentCommand]) {
                         subCommands[command.parentCommand] = [];
@@ -49,7 +49,7 @@ export default class CommandManager extends Collection {
                     subCommands[command.parentCommand].push(command);
                 }
             } else if (command_raw.commandType == "3") {
-                var command = new SubCommandGroup(command_raw);
+                var command = new SubCommandGroup(command_raw, this.client);
                 if (command.parentCommand) {
                     if (!subCommandGroups[command.parentCommand]) {
                         subCommandGroups[command.parentCommand] = [];

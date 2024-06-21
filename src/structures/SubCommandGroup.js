@@ -4,7 +4,9 @@ import CommandExecute from "./CommandExecute.js";
 export default class SubCommandGroup {
     constructor(cmd) {
         this.name = cmd.name;
-        this.descriptions = cmd.descriptions;
+        this.descriptions = typeof cmd.descriptions == "object" ? 
+            cmd.descriptions : 
+            (() => {var json = {}; json[client.config.defaultLanguage] = "No description"; return json;});
         // this.category = cmd.category || "unknown";
         this.commandType = cmd.commandType || "3";
         this.parentCommand = cmd.parentCommand;
@@ -16,7 +18,7 @@ export default class SubCommandGroup {
         // this.aliases = cmd.aliases || []; 
         // this.exec = cmd.exec;
         // this.slashOptions = cmd.slashOptions || {};
-        this.permissions = cmd.permissions;
+        this.permissions = cmd.permissions || {};
     }
 
     createDescriptionRow(lang) {

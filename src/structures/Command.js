@@ -2,9 +2,11 @@ import { Collection } from "discord.js";
 import CommandExecute from "./CommandExecute.js";
 
 export default class Command {
-    constructor(cmd) {
+    constructor(cmd, client) {
         this.name = cmd.name;
-        this.descriptions = cmd.descriptions;
+        this.descriptions = typeof cmd.descriptions == "object" ? 
+            cmd.descriptions : 
+            (() => {var json = {}; json[client.config.defaultLanguage] = "No description"; return json;});
         this.category = cmd.category || "unknown";
         this.commandType = cmd.commandType || "1";
         this.parentCommand = null;
