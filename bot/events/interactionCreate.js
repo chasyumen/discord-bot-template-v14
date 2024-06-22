@@ -1,3 +1,5 @@
+import { ApplicationCommandType, InteractionType } from "discord.js";
+
 export const name = "interactionCreate";
 export const event = "interactionCreate";
 export const once = false;
@@ -15,7 +17,8 @@ export async function run (interaction) {
     var language = config.defaultLanguage;//uData.language;
     language = interaction.locale.replace(/-/g, "_");
         // console.log(interaction.type);
-    if (interaction.type == 2) {
+    if (interaction.type == InteractionType.ApplicationCommand) {
+        if (!interaction.commandType == ApplicationCommandType.ChatInput) return;
         // console.log()
         // if (!client.cooldowns.command.checkUser(interaction.user, interaction.commandName).state) return;
         // client.cooldowns.command.add(interaction.user, interaction.guild, interaction.commandName);
@@ -53,7 +56,7 @@ export async function run (interaction) {
             // var executor = command.executor(interaction, info);
         }
         return executor.exec();
-    } else if (interaction.type == 3) {
+    } else if (interaction.type == InteractionType.MessageComponent) {
         // language = interaction.locale;
         // return;
         // if (!interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 14)])) return await interaction.reply(client.locale.getString("errors.permissions.bot.missingEmbed", language));
