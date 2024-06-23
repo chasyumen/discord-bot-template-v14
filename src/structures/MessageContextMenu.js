@@ -8,7 +8,7 @@ export default class MessageContextMenu {
             cmd.descriptions : 
             (() => {var json = {}; json[client.config.defaultLanguage] = "No description"; return json;});
         // this.category = cmd.category || "unknown";
-        this.commandType = cmd.commandType || "1";
+        this.commandType = cmd.commandType || "3";
         this.dm = typeof cmd.dm == "boolean" ? cmd.dm : false;
         // this.disableSlash = cmd.disableSlash;
         this.hide = typeof cmd.hide == "boolean" ? cmd.hide : false;

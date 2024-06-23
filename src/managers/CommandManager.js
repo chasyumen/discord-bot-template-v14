@@ -97,10 +97,11 @@ export default class CommandManager extends Collection {
      */
 
     async slashReg() {
+        var client = this.client;
         // console.log(this.client.application.commands.cache.toJSON());
         await eachSeries(this.client.application.commands.cache.toJSON(), async (cmd) => {
             if (cmd.type !== ApplicationCommandType.ChatInput) return;
-            var command = this.client.commands.toJSON().find(x => x.name == cmd.name);
+            var command = client.commands.toJSON().find(x => x.name == cmd.name);
             // console.log(command);
             if (!command) {
                 console.log("slashDelete");
@@ -113,7 +114,7 @@ export default class CommandManager extends Collection {
         await eachSeries(this.client.commands.toJSON(), async (cmd, index) => {
             await new Promise(async (resolve, reject) => {
                 if (cmd.hide == true) resolve(false);
-                var command = this.client.application.commands.cache.find(x => x.name == cmd.name);
+                var command = client.application.commands.cache.find(x => x.name == cmd.name);
                 // console.log(cmd.name);
                 // if (typeof command == "object") {
                 //     var descriptionParsed = `${cmd.descriptions.en_US} / ${cmd.descriptions.ja}`;
@@ -201,9 +202,9 @@ export default class CommandManager extends Collection {
                 }
                 commandBuilder.setDefaultMemberPermissions(finalperm);
                 if (command) {
-                    await this.client.application.commands.edit(command, commandBuilder);
+                    await client.application.commands.edit(command, commandBuilder);
                 } else {
-                    await this.client.application.commands.create(commandBuilder);
+                    await client.application.commands.create(commandBuilder);
                 }
                 return setTimeout(() => {resolve(true)}, 100)
             });

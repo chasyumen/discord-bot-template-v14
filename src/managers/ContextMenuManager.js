@@ -5,7 +5,7 @@ import { eachSeries } from "async";
 import MessageContextMenu from "../structures/MessageContextMenu.js";
 import UserContextMenu from "../structures/UserContextMenu.js";
 import getDir from "../utils/getDir.js";
-import { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
+import { ContextMenuCommandBuilder } from "@discordjs/builders";
 import generateDescriptionArray from "../utils/generateDescriptionArray.js";
 import registerCommandOptions from "../utils/registerCommandOptions.js";
 
@@ -29,11 +29,11 @@ export default class ContextMenuManager extends Collection {
         await eachSeries(filtered, async file => {
             let command_raw = await import("../../" + file);//join("../../bot/commands", file)
             if (command_raw.default) command_raw = command_raw.default;
-            if (command_raw.commandType == "1") {
-                var command = new MessageContextMenu(command_raw, this.client);
-                this.set(command.name, command);
-            } else if (command_raw.commandType == "2") {
+            if (command_raw.commandType == "2") {
                 var command = new UserContextMenu(command_raw, this.client);
+                this.set(command.name, command);
+            } else if (command_raw.commandType == "3") {
+                var command = new MessageContextMenu(command_raw, this.client);
                 this.set(command.name, command);
             }
         });
@@ -47,92 +47,39 @@ export default class ContextMenuManager extends Collection {
      */
 
     async slashReg() {
+        var client = this.client;
         // console.log(this.client.application.commands.cache.toJSON());
         await eachSeries(this.client.application.commands.cache.toJSON(), async (cmd) => {
-            if (cmd.type !== ApplicationCommandType.ChatInput) return;
-            var command = this.client.commands.toJSON().find(x => x.name == cmd.name);
+            if (cmd.type !== ApplicationCommandType.Message || cmd.type !== ApplicationCommandType.User) return;
+            var command = client.contextMenus.toJSON().find(x => x.name == cmd.name);
             // console.log(command);
             if (!command) {
-                console.log("slashDelete");
+                console.log("contextMenuDelete");
                 await cmd.delete();
             } else if (command.hide === true) {
                 await cmd.delete();
             }
             return true;
         });
-        await eachSeries(this.client.commands.toJSON(), async (cmd, index) => {
+        await eachSeries(this.client.contextMenus.toJSON(), async (cmd, index) => {
             await new Promise(async (resolve, reject) => {
                 if (cmd.hide == true) resolve(false);
-                var command = this.client.application.commands.cache.find(x => x.name == cmd.name);
-                // console.log(cmd.name);
-                // if (typeof command == "object") {
-                //     var descriptionParsed = `${cmd.descriptions.en_US} / ${cmd.descriptions.ja}`;
-                //     if (descriptionParsed !== command.description) {
-                //         set = true;
-                //     } else if (cmd.slashOptions.options) {
-                //         if (cmd.slashOptions.options.length !== command.options.length) {
-                //             set = true;
-                //         }
-                //     } else if (!cmd.slashOptions.options && command.options.length >= 1) {
-                //         set = true;
-                //     }
-                // } else {
-                //     set = true;
-                // }
-                let descriptionArray = generateDescriptionArray(cmd.descriptions);
-                let commandBuilder = new SlashCommandBuilder();
+                var command = client.application.commands.cache.find(x => x.name == cmd.name);
+                // let descriptionArray = generateDescriptionArray(cmd.descriptions);
+                let commandBuilder = new ContextMenuCommandBuilder();
                 commandBuilder
                     .setName(cmd.name)
-                    .setDescription(cmd.descriptions[config.defaultLanguage]);
+                    .setType(Number(cmd.commandType));
+                    // .setDescription(cmd.descriptions[config.defaultLanguage]);
                     //
-                descriptionArray.forEach(loc => {
-                    commandBuilder.setDescriptionLocalization(loc.locale, loc.string);
-                });
+                // descriptionArray.forEach(loc => {
+                //     commandBuilder.setDescriptionLocalization(loc.locale, loc.string);
+                // });
 
                 // console.log(commandBuilder);
                 // console.log(cmd.subCommands);
-                cmd.subCommands.forEach((subCommand) => {
-                    if (subCommand.commandType == "2") {
-                        var subCommandBuilder = new SlashCommandSubcommandBuilder();
-                        // console.log(subCommand)
-                        let subCommandDescriptionArray = generateDescriptionArray(cmd.descriptions);
-                        subCommandBuilder
-                            .setName(subCommand.name)
-                            .setDescription(subCommand.descriptions[config.defaultLanguage]);
-                        subCommandDescriptionArray.forEach(loc => {
-                            subCommandBuilder.setDescriptionLocalization(loc.locale, loc.string);
-                        });
-                        subCommandBuilder = registerCommandOptions(subCommandBuilder, subCommand.slashOptions);
-                        commandBuilder.addSubcommand(subCommandBuilder);
-                    } else if (subCommand.commandType == "3") {
-                        var subCommandGroupBuilder = new SlashCommandSubcommandGroupBuilder();
-                        let subCommandGroupDescriptionArray = generateDescriptionArray(cmd.descriptions);
-                        subCommandGroupBuilder
-                            .setName(subCommand.name)
-                            .setDescription(subCommand.descriptions[config.defaultLanguage]);
-                        subCommandGroupDescriptionArray.forEach(loc => {
-                            subCommandGroupBuilder.setDescriptionLocalization(loc.locale, loc.string);
-                        });
-                        subCommand.subCommands.forEach((subCommand2) => {
-                            if (subCommand2.commandType == "2") {
-                                var subCommandBuilder = new SlashCommandSubcommandBuilder();
-                                // console.log(subCommand)
-                                let subCommandDescriptionArray = generateDescriptionArray(cmd.descriptions);
-                                subCommandBuilder
-                                    .setName(subCommand2.name)
-                                    .setDescription(subCommand2.descriptions[config.defaultLanguage]);
-                                subCommandDescriptionArray.forEach(loc => {
-                                    subCommandBuilder.setDescriptionLocalization(loc.locale, loc.string);
-                                });
-                                subCommandBuilder = registerCommandOptions(subCommandBuilder, subCommand2.slashOptions);
-                                subCommandGroupBuilder.addSubcommand(subCommandBuilder);
-                            }
-                        });
-                        commandBuilder.addSubcommandGroup(subCommandGroupBuilder);
-                    }
-                });
 
-                commandBuilder = registerCommandOptions(commandBuilder, cmd.slashOptions);
+                // commandBuilder = registerCommandOptions(commandBuilder, cmd.slashOptions);
 
                 //DMでの利用OK or NG
                 commandBuilder.setDMPermission(cmd.dm);
@@ -150,10 +97,11 @@ export default class ContextMenuManager extends Collection {
                     var finalperm = null;
                 }
                 commandBuilder.setDefaultMemberPermissions(finalperm);
+                // console.log(commandBuilder)
                 if (command) {
-                    await this.client.application.commands.edit(command, commandBuilder);
+                    await client.application.commands.edit(command, commandBuilder);
                 } else {
-                    await this.client.application.commands.create(commandBuilder);
+                    await client.application.commands.create(commandBuilder);
                 }
                 return setTimeout(() => {resolve(true)}, 100)
             });

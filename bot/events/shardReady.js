@@ -17,6 +17,7 @@ export async function run(shardId) {
     await client.application.commands.fetch();
     if (shardId == 0) {
         await client.commands.slashReg();
+        await client.contextMenus.slashReg();
         client.isCommandRegistrationFinished = true;
         client.log("LOG", `Initializing process completed.`);
     } else {
