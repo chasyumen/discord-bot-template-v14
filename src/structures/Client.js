@@ -2,6 +2,7 @@ import { Client, Collection } from "discord.js";
 import LocaleManager from "../managers/LocaleManager.js";
 import EventManager from "../managers/EventManager.js";
 import CommandManager from "../managers/CommandManager.js";
+import ContextMenuManager from "../managers/ContextMenuManager.js";
 import MessageComponentManager from "../managers/MessageComponentManager.js";
 import formatLogger from "../utils/formatLogger.js";
 // const MessageComponentManager = require("../managers/MessageComponentManager.js");
@@ -15,6 +16,7 @@ export default class CustomClient extends Client {
         this.locale = new LocaleManager(this);
         this.events = new EventManager(this);
         this.commands = new CommandManager(this);
+        this.contextMenus = new ContextMenuManager(this);
         this.isCommandRegistrationFinished = undefined;
         this.messageComponents = new MessageComponentManager(this);
         this.log = formatLogger("BOT")
@@ -26,6 +28,7 @@ export default class CustomClient extends Client {
     async start(token) {
         await this.locale.loadAll();
         await this.commands.loadAll();
+        await this.contextMenus.loadAll();
         this.isCommandRegistrationFinished = false;
         await this.messageComponents.loadAll();
         await this.events.loadAll();

@@ -60,7 +60,7 @@ export async function run(interaction) {
             interaction.commandType == ApplicationCommandType.Message ||
             interaction.commandType == ApplicationCommandType.User
         ) {
-            
+            console.log(interaction)
         }
 
     } else if (interaction.type == InteractionType.MessageComponent) {
