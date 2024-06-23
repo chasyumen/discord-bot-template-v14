@@ -66,7 +66,7 @@ export async function run(interaction) {
                 // serverData: sData,
                 // userData: uData
             }
-            console.log(interaction)
+            // console.log(interaction)
             if (client.contextMenus.has(info.command)) {
                 var command = client.contextMenus.get(info.command);
             } else {
