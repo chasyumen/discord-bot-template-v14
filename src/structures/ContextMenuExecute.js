@@ -10,26 +10,13 @@ export default class ContextMenuExecute {
         this.replyMessage = null;
 
         this.guild = this.interaction.guild || null;
-        this.author = (this.isSlash ? interaction.user : interaction.author);
+        this.author = this.interaction.user;
         this.channel = this.interaction.channel || null;
         this.member = this.interaction.member;
         this.options = this.interaction.options;
         this.replied = false;
     }
 
-    // async send(...data) {
-    //     if (this.replied) {
-    //         if (!this.isSlash) {
-    //             var msg = await this.interaction.channel.send(...data);
-    //             return msg;
-    //         } else {
-    //             // if (this.interaction.deferred) return this.interaction.editReply(...reply);
-    //             return await this.interaction.channel.send(...data);
-    //         }
-    //     } else {
-    //         return await this.reply(...data);
-    //     }
-    // }
 
     async reply(...reply) {
         this.replied = true;

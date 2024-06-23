@@ -60,7 +60,20 @@ export async function run(interaction) {
             interaction.commandType == ApplicationCommandType.Message ||
             interaction.commandType == ApplicationCommandType.User
         ) {
+            var info = {
+                command: interaction.commandName,
+                language: language,
+                // serverData: sData,
+                // userData: uData
+            }
             console.log(interaction)
+            if (client.contextMenus.has(info.command)) {
+                var command = client.contextMenus.get(info.command);
+            } else {
+                return;
+            }
+            var executor = command.executor(interaction, info);
+            return executor.exec();
         }
 
     } else if (interaction.type == InteractionType.MessageComponent) {

@@ -13,5 +13,5 @@ export const permissions = {
     userNeeded: 0n,
 }
 export async function exec (cmd) {
-    
+    cmd.reply("?")
 }
