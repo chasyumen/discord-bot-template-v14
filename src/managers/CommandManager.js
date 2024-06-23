@@ -1,4 +1,4 @@
-import { Collection, PermissionsBitField, ApplicationCommand } from "discord.js";
+import { Collection, PermissionsBitField, ApplicationCommand, ApplicationCommandType } from "discord.js";
 import { readdir } from "fs";
 import { join, resolve } from "path";
 import { eachSeries } from "async";
@@ -99,7 +99,7 @@ export default class CommandManager extends Collection {
     async slashReg() {
         // console.log(this.client.application.commands.cache.toJSON());
         await eachSeries(this.client.application.commands.cache.toJSON(), async (cmd) => {
-            if (cmd.type !== 1) return;
+            if (cmd.type !== ApplicationCommandType.ChatInput) return;
             var command = this.client.commands.toJSON().find(x => x.name == cmd.name);
             // console.log(command);
             if (!command) {

@@ -4,7 +4,7 @@ export const name = "interactionCreate";
 export const event = "interactionCreate";
 export const once = false;
 
-export async function run (interaction) {
+export async function run(interaction) {
     if (interaction.user.id == client.user.id) return;
     if (!interaction.channel) return;
     if (!interaction.inGuild()) {
@@ -16,46 +16,53 @@ export async function run (interaction) {
     if (!interaction.channel.type == "0") return;
     var language = config.defaultLanguage;//uData.language;
     language = interaction.locale.replace(/-/g, "_");
-        // console.log(interaction.type);
+    // console.log(interaction.type);
     if (interaction.type == InteractionType.ApplicationCommand) {
-        if (!interaction.commandType == ApplicationCommandType.ChatInput) return;
-        // console.log()
-        // if (!client.cooldowns.command.checkUser(interaction.user, interaction.commandName).state) return;
-        // client.cooldowns.command.add(interaction.user, interaction.guild, interaction.commandName);
-        // if (!interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await interaction.reply({ content: `<#${interaction.channel.id}> 内でBotがメッセージを閲覧する権限または(埋め込み)メッセージを送る権限がありません。`, ephemeral: true });
-        // if (!interaction.channel.permissionsFor(interaction.guild.me).has(["EMBED_LINKS"])) return await interaction.reply(client.locale.getString("errors.permissions.bot.missingEmbed", language));
-        var info = {
-            command: interaction.commandName,
-            options: interaction.options,
-            isSlash: true,
-            language: language,
-            // serverData: sData,
-            // userData: uData
-        }
-        // console.log(info);
-        if (client.commands.has(info.command)) {
-            var command = client.commands.get(info.command);
-        } else if (client.commands.aliases.has(info.command)) {
-            var command = client.commands.get(client.commands.aliases.has(info.command));
-        } else {
-            return;
-        }
-        if (command.subCommands.size == 0) {
-            var executor = command.executor(interaction, info);
-        } else {
-            var subCommandGroupId = interaction.options.getSubcommandGroup(false);
-            if (subCommandGroupId) {
-                var subCommandId = interaction.options.getSubcommand();
-                var subCommand = command.subCommands.get(subCommandGroupId).subCommands.get(subCommandId);
-            } else {
-                var subCommandId = interaction.options.getSubcommand();
-                var subCommand = command.subCommands.get(subCommandId);
+        if (interaction.commandType == ApplicationCommandType.ChatInput) {
+            // console.log()
+            // if (!client.cooldowns.command.checkUser(interaction.user, interaction.commandName).state) return;
+            // client.cooldowns.command.add(interaction.user, interaction.guild, interaction.commandName);
+            // if (!interaction.channel.permissionsFor((await interaction.guild.members.fetchMe())).has([BigInt(1 << 10), BigInt(1 << 11), BigInt(1 << 14)])) return await interaction.reply({ content: `<#${interaction.channel.id}> 内でBotがメッセージを閲覧する権限または(埋め込み)メッセージを送る権限がありません。`, ephemeral: true });
+            // if (!interaction.channel.permissionsFor(interaction.guild.me).has(["EMBED_LINKS"])) return await interaction.reply(client.locale.getString("errors.permissions.bot.missingEmbed", language));
+            var info = {
+                command: interaction.commandName,
+                options: interaction.options,
+                isSlash: true,
+                language: language,
+                // serverData: sData,
+                // userData: uData
             }
+            // console.log(info);
+            if (client.commands.has(info.command)) {
+                var command = client.commands.get(info.command);
+            } else if (client.commands.aliases.has(info.command)) {
+                var command = client.commands.get(client.commands.aliases.has(info.command));
+            } else {
+                return;
+            }
+            if (command.subCommands.size == 0) {
+                var executor = command.executor(interaction, info);
+            } else {
+                var subCommandGroupId = interaction.options.getSubcommandGroup(false);
+                if (subCommandGroupId) {
+                    var subCommandId = interaction.options.getSubcommand();
+                    var subCommand = command.subCommands.get(subCommandGroupId).subCommands.get(subCommandId);
+                } else {
+                    var subCommandId = interaction.options.getSubcommand();
+                    var subCommand = command.subCommands.get(subCommandId);
+                }
+
+                var executor = subCommand.executor(interaction, info);
+                // var executor = command.executor(interaction, info);
+            }
+            return executor.exec();
+        } else if (
+            interaction.commandType == ApplicationCommandType.Message ||
+            interaction.commandType == ApplicationCommandType.User
+        ) {
             
-            var executor = subCommand.executor(interaction, info);
-            // var executor = command.executor(interaction, info);
         }
-        return executor.exec();
+
     } else if (interaction.type == InteractionType.MessageComponent) {
         // language = interaction.locale;
         // return;
@@ -95,10 +102,10 @@ export async function run (interaction) {
                 // return await cmd.exec(interaction);
                 return executor.exec();
             } else {
-                return interaction.reply({content: "Interaction Failed.", ephemeral: true});
+                return interaction.reply({ content: "Interaction Failed.", ephemeral: true });
             }
         } else {
-            return interaction.reply({content: "Interaction Failed.", ephemeral: true});
+            return interaction.reply({ content: "Interaction Failed.", ephemeral: true });
         }
     }
     // console.log()
