@@ -11,7 +11,7 @@ export async function run(shardId) {
     client.log("LOG", `SID: ${shardId} | Process Online with ${client.user.tag}`);
     client.user.presence.set({
         activities: [{ name: `Initializing (2/2) | Version: ${JSON.parse(readFileSync("./package.json").toString()).version}`, type: 0 },],
-        status: "online",
+        status: "idle",
         shardId: Number(shardId)
     });
     await client.application.commands.fetch();
@@ -25,16 +25,18 @@ export async function run(shardId) {
     }
     client.guilds.count = client.guilds.cache.size;
     client.isCommandRegistrationFinished = true;
+    // client.emit("statusUpdate");
+    process.send({type: "shardInitDone"})
     // console.log(client.locale.getString("test2", "ja"))
     var number = 0;
     // setPresence();
     // setInterval(setPresence, 5000);
     // // client.fetchClientValues("client.guilds.cache.size");
-    client.user.presence.set({
-        activities: [{ name: `${client.guilds.count}guilds| Shard: ${client.shardId}(${client.shardId+1}/${client.shard.count}) | Pre`, type: 0 }],
-        status: "online",
-        shardId: client.shardId
-    });
+    // client.user.presence.set({
+    //     activities: [{ name: `${client.guilds.count}guilds| Shard: ${client.shardId}(${client.shardId+1}/${client.shard.count}) | Pre`, type: 0 }],
+    //     status: "online",
+    //     shardId: client.shardId
+    // });
     // async function setPresence() {
     //     var presences = [
     //         { name: `${client.guilds.cache.size}, ShardID: ${client.shardId}, Total Shards: ${client.shardId+1}/${client.shard.count}`, type: 0 },

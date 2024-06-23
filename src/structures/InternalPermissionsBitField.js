@@ -84,8 +84,9 @@ class InternalPermissionsBitField extends BitField {// extends BitField
 let FLAGS = {
     "Administrator": 1 << 0, //1
     "Tester": 1 << 1, //2
-    "DangerCommands": 1 << 2, //4
-    // "IGNORE_COOLDOWN": 1 << 3, //8
+    "Developer": 1 << 2, //4
+    "DangerCommands": 1 << 3, //8
+    // "IGNORE_COOLDOWN": 1 << 4, //16
 }
 
 export default InternalPermissionsBitField;

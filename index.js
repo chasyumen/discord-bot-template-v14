@@ -10,6 +10,8 @@ const shards = new ShardingManager("./bot/index.js");
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
+shards.shardInitDone = 0;
+
 shards.on("shardCreate", shard => {
 	// Listeing for the ready event on shard.
 	shards.log("LOG", "shard create: ", shard.id);
@@ -23,8 +25,14 @@ shards.on("shardCreate", shard => {
 		if (!message) return;
 		if (typeof message !== "object") return;
 		if (!message.type) return;
+		// shards.log("DEBUG", message)
+		if (message.type == "shardInitDone") {
+			shards.shardInitDone = shards.shardInitDone+1;
+		}
 	});
 });
+
+
 
 async function fetchGuilds() {
 	var guilds = await shards.fetchClientValues("guilds.cache.size").then((shardGuilds) => {return shardGuilds.reduce((a, b) => {return a + b})});
@@ -35,7 +43,19 @@ async function fetchGuilds() {
 (async () => {
 	// await database.connect(process.env.MONGO_URL);
 	// await shards.start({amount: 3, delay: 5000});
-	await shards.start();
+	await shards.start({amount: 2});
+	shards.log("DEBUG", "allShardsCreated")
+	await new Promise((resolve) => {
+		test();
+		function test() {
+			if (shards.shardInitDone == shards.shards.size) {
+				resolve();
+			} else {
+				setTimeout(test, 200);
+			}
+		}
+	});
+	shards.log("DEBUG", "shardReady")
 	await fetchGuilds();
 	shards.fetchGuildsInterval = setInterval(fetchGuilds, 20000);
 	shards.shards.map((shard) => shard.send({ type: "allShardsReady" }));

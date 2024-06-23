@@ -22,6 +22,7 @@ export default {
         }
     },
     "defaultLanguage": "en_US",
+    "dbCache": false,
     "userPermissions": {
         "614305573827117066": 1
     }

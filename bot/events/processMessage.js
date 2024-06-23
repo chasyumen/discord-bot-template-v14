@@ -12,7 +12,9 @@ export async function run (msg) {
         client.shardId = msg.data;
         return;
     } else if (msg.type == "allShardsReady") {
-        client.emit("allShardsReady");
+        if (client.allShardsReady) return;
+        client.allShardsReady = true;
+        client.emit("statusUpdate");
         return;
     } 
 }

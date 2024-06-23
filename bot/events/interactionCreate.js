@@ -10,9 +10,9 @@ export async function run(interaction) {
     if (!interaction.inGuild()) {
         return;
     }
-    if (!client.isCommandRegistrationFinished) return;
+    if (!client.allShardsReady) return;
     // var sData = await interaction.guild.getdb();
-    // var uData = await interaction.user.getdb();
+    var uData = await interaction.user.getdb();
     if (!interaction.channel.type == "0") return;
     var language = config.defaultLanguage;//uData.language;
     language = interaction.locale.replace(/-/g, "_");
@@ -30,7 +30,7 @@ export async function run(interaction) {
                 isSlash: true,
                 language: language,
                 // serverData: sData,
-                // userData: uData
+                userData: uData
             }
             // console.log(info);
             if (client.commands.has(info.command)) {
@@ -64,7 +64,7 @@ export async function run(interaction) {
                 command: interaction.commandName,
                 language: language,
                 // serverData: sData,
-                // userData: uData
+                userData: uData
             }
             // console.log(interaction)
             if (client.contextMenus.has(info.command)) {
@@ -98,15 +98,13 @@ export async function run(interaction) {
         }
         var info = {
             command: interaction.customId.match(/:/) ? interaction.customId.split(":")[0] : interaction.customId,
-            // option: message.content.slice(prefix.length).slice(message.content.slice(prefix.length).split(" ")[0].length+1),
             options: interaction.options,
-            // isSlash: true,
             language: language,
-            userId: uID
+            userId: uID,
             // permission: await client.permissions.get(message.author.id),
             // serverData: sData,
             // channelData: await message.channel.getdb(),
-            // userData: await message.author.getdb()
+            userData: uData
         }
         if (client.messageComponents.has(info.command)) {
             var cmd = client.messageComponents.get(info.command);

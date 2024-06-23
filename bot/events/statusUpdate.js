@@ -1,14 +1,17 @@
 import { readFileSync } from "fs";
 
-export const name = "allShardsReady";
-export const event = "allShardsReady";
+export const name = "statusUpdate";
+export const event = "statusUpdate";
 export const once = true;
 
 export async function run() {
+    // if (!client.allShardsReady) return;
+    // if (client.presenceUpdater) return;
+    // client.presenceUpdater = true;
     // console.log(`shardAll.log${client.shardId}`);
     var number = 0;
     
-    setTimeout(() => {
+    client.presenceUpdater = setTimeout(() => {
         setPresence();
         setInterval(setPresence, 10000);
     }, 2000*client.shardId);

@@ -18,6 +18,7 @@ const client = (global.client = new Client({
             { name: `Starting up... (1/2) | ${JSON.parse(readFileSync("./package.json").toString()).version}` }//Starting | ${require("./../package.json").version}
         ]
     },
+    botConfig: config
 }));
 
 process.on("message", (...msg) => client.emit("processMessage", ...msg));
@@ -71,6 +72,26 @@ Discord.User.prototype.getPermissions = async function () {
             throw error;
         }
     }
+};
+
+Discord.User.prototype.getdb = async function () {
+    try {
+        var userData = this.client.db.cache.user.find(data => data.userId == this.id);
+    } catch (error) {
+        client.log("DEBUG", this.client.db.models);
+        var userData = await this.client.db.models.user.findOne({
+            userId: this.id
+        });
+    }
+    // var guildData = await this.client.db.guild.findOne({
+    //     guildId: this.id
+    // });
+    if (!userData) {
+        userData = new client.db.user({
+            userId: this.id
+        });
+    }
+    return userData;
 };
 
 client.start(process.env.DISCORD_TOKEN);
