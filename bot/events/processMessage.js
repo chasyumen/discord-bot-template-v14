@@ -16,5 +16,11 @@ export async function run (msg) {
         client.allShardsReady = true;
         client.emit("statusUpdate");
         return;
-    } 
+    } else if (msg.type == "shutdown") {
+        clearInterval(client.setPresenceInterval);
+        await client.user.setStatus("invisible");
+        client.allShardsReady = false;
+        process.send({type: "exited", shard: client.shardId})
+        return;
+    }
 }

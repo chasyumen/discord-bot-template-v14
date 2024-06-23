@@ -206,7 +206,7 @@ export default class CommandManager extends Collection {
                 } else {
                     await client.application.commands.create(commandBuilder);
                 }
-                return setTimeout(() => {resolve(true)}, 100)
+                return setTimeout(() => {resolve(true)}, 2000)
             });
             return;
         });

@@ -11,7 +11,7 @@ export async function run() {
     // console.log(`shardAll.log${client.shardId}`);
     var number = 0;
     
-    client.presenceUpdater = setTimeout(() => {
+    client.setPresenceInterval = setTimeout(() => {
         setPresence();
         setInterval(setPresence, 10000);
     }, 2000*client.shardId);

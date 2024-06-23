@@ -13,3 +13,4 @@ commandsディレクトリ内であれば階層深くても読み込む仕組み
 
 ## Todo
 - web api
+- process killer

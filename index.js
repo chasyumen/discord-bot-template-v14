@@ -11,7 +11,7 @@ process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
 shards.shardInitDone = 0;
-
+shards.exited = 0;
 shards.on("shardCreate", shard => {
 	// Listeing for the ready event on shard.
 	shards.log("LOG", "shard create: ", shard.id);
@@ -28,8 +28,23 @@ shards.on("shardCreate", shard => {
 		// shards.log("DEBUG", message)
 		if (message.type == "shardInitDone") {
 			shards.shardInitDone = shards.shardInitDone+1;
-		// } else if (message.type == "shutdown") {
-
+		} else if (message.type == "shutdownSignal") {
+			shards.log("LOG", "shutting down")
+			shards.shards.map((shard) => shard.send({ type: "shutdown" }));
+			await new Promise((resolve) => {
+				test();
+				function test() {
+					if (shards.exited == shards.shards.size) {
+						resolve();
+					} else {
+						setTimeout(test, 200);
+					}
+				}
+			});
+			shards.log("LOG", "shutdown process completed")
+			process.exit();
+		} else if (message.type == "exited") {
+			shards.exited = shards.exited+1;
 		}
 	});
 });
@@ -57,7 +72,7 @@ async function fetchGuilds() {
 			}
 		}
 	});
-	shards.log("DEBUG", "shardReady")
+	shards.log("LOG", "all shards are now active")
 	await fetchGuilds();
 	shards.fetchGuildsInterval = setInterval(fetchGuilds, 20000);
 	shards.shards.map((shard) => shard.send({ type: "allShardsReady" }));

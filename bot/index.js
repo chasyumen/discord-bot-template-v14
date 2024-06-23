@@ -78,7 +78,6 @@ Discord.User.prototype.getdb = async function () {
     try {
         var userData = this.client.db.cache.user.find(data => data.userId == this.id);
     } catch (error) {
-        client.log("DEBUG", this.client.db.models);
         var userData = await this.client.db.models.user.findOne({
             userId: this.id
         });
