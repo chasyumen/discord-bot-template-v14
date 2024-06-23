@@ -1,7 +1,4 @@
 export default {
-    "api": {
-        "enable": true,
-    },
     "botName": "DBTV14",
     "colors": {
         "default_color": 65535,

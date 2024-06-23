@@ -28,6 +28,8 @@ shards.on("shardCreate", shard => {
 		// shards.log("DEBUG", message)
 		if (message.type == "shardInitDone") {
 			shards.shardInitDone = shards.shardInitDone+1;
+		// } else if (message.type == "shutdown") {
+
 		}
 	});
 });

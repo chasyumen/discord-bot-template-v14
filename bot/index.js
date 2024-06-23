@@ -94,6 +94,52 @@ Discord.User.prototype.getdb = async function () {
     return userData;
 };
 
+Discord.User.prototype.setdb = async function (data) {
+    var userData = await this.client.db.user.findOne({
+        userId: this.id
+    });
+    if (!userData) {
+        var dataSave = data;
+        dataSave["userId"] = this.id;
+        return await (new client.db.user(dataSave)).save();
+    } else {
+        return await client.db.user.findOneAndUpdate({ userId: this.id }, data);
+    }
+};
+
+Discord.Guild.prototype.getdb = async function () {
+    try {
+        var guildData = this.client.db.cache.guild.find(data => data.guildId == this.id);
+    } catch (error) {
+        var guildData = await this.client.db.models.guild.findOne({
+            guildId: this.id
+        });
+    }
+    // var guildData = await this.client.db.guild.findOne({
+    //     guildId: this.id
+    // });
+    if (!guildData) {
+        guildData = new client.db.guild({
+            guildId: this.id
+        });
+    }
+    return guildData;
+};
+
+Discord.Guild.prototype.setdb = async function (data) {
+    var guildData = await this.client.db.guild.findOne({
+        guildId: this.id
+    });
+    if (!guildData) {
+        var dataSave = data;
+        dataSave["guildId"] = this.id;
+        return await (new client.db.guild(dataSave)).save();
+    } else {
+        return await client.db.guild.findOneAndUpdate({ guildId: this.id }, data);
+    }
+};
+
+
 client.start(process.env.DISCORD_TOKEN);
 
 process.on("uncaughtException", console.error);
