@@ -6,12 +6,12 @@ module.exports = {
         en_US: "This is a test command.",
         ja: "これはテスト用コマンドです。"
     },
-    category: "dev",
+    category: "test",
     commandType: "1",
     parentCommand: null,
     parentGroup: null,
     dm: false,
-    hide: false,
+    hide: true,
     isNsfw: false,
     slashOptions: [],
     permissions: {
