@@ -60,7 +60,7 @@ async function fetchGuilds() {
 (async () => {
 	// await database.connect(process.env.MONGO_URL);
 	// await shards.start({amount: 3, delay: 5000});
-	await shards.start({amount: 2});
+	await shards.start();
 	shards.log("DEBUG", "allShardsCreated")
 	await new Promise((resolve) => {
 		test();

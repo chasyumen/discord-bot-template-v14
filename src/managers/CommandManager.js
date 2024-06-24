@@ -119,21 +119,6 @@ export default class CommandManager extends Collection {
                 if (cmd.hide == true) return resolve(false);
                 if (cmd.guildCommand) return resolve(false);
                 var command = client.application.commands.cache.find(x => x.name == cmd.name);
-                // console.log(cmd.name);
-                // if (typeof command == "object") {
-                //     var descriptionParsed = `${cmd.descriptions.en_US} / ${cmd.descriptions.ja}`;
-                //     if (descriptionParsed !== command.description) {
-                //         set = true;
-                //     } else if (cmd.slashOptions.options) {
-                //         if (cmd.slashOptions.options.length !== command.options.length) {
-                //             set = true;
-                //         }
-                //     } else if (!cmd.slashOptions.options && command.options.length >= 1) {
-                //         set = true;
-                //     }
-                // } else {
-                //     set = true;
-                // }
                 let descriptionArray = generateDescriptionArray(cmd.descriptions);
                 let commandBuilder = new SlashCommandBuilder();
                 commandBuilder
@@ -144,12 +129,9 @@ export default class CommandManager extends Collection {
                     commandBuilder.setDescriptionLocalization(loc.locale, loc.string);
                 });
 
-                // console.log(commandBuilder);
-                // console.log(cmd.subCommands);
                 cmd.subCommands.forEach((subCommand) => {
                     if (subCommand.commandType == "2") {
                         var subCommandBuilder = new SlashCommandSubcommandBuilder();
-                        // console.log(subCommand)
                         let subCommandDescriptionArray = generateDescriptionArray(cmd.descriptions);
                         subCommandBuilder
                             .setName(subCommand.name)

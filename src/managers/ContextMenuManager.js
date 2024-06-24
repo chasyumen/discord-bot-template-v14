@@ -70,16 +70,6 @@ export default class ContextMenuManager extends Collection {
                 commandBuilder
                     .setName(cmd.name)
                     .setType(Number(cmd.commandType));
-                    // .setDescription(cmd.descriptions[config.defaultLanguage]);
-                    //
-                // descriptionArray.forEach(loc => {
-                //     commandBuilder.setDescriptionLocalization(loc.locale, loc.string);
-                // });
-
-                // console.log(commandBuilder);
-                // console.log(cmd.subCommands);
-
-                // commandBuilder = registerCommandOptions(commandBuilder, cmd.slashOptions);
 
                 //DMでの利用OK or NG
                 commandBuilder.setDMPermission(cmd.dm);
