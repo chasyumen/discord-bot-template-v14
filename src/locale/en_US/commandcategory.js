@@ -6,6 +6,10 @@ export const data = {
         "info": {
             "title": "Bot Informations / Guide",
             "description": "Commands about the bot"
+        },
+        "dev": {
+            "title": "Developer only commands",
+            "description": "Advanced commands only for bot admin"
         }
     }
 };
