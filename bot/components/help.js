@@ -1,3 +1,5 @@
+import { eachSeries } from "async";
+
 export const name = "help";
 export const id = "help";
 export const hide = false;
@@ -38,16 +40,21 @@ export async function exec (cmd) {
     if (command == "home") {
         var categories_text = client.locale.getString("commands.help.text", language) + "\n";
         var categories = [];
-        await async2.eachSeries(client.commands.toJSON().filter(x => !x.hide), async (cmd) => {
-            if (!categories.find(x => x.id == cmd.category)) {
-                if (!config.commandCategory[cmd.category]) {
+        await eachSeries(client.commands.toJSON(), async (command) => {
+            if (command.hide && !command.guildCommand) return;
+            if (command.guildCommand) {
+                var guildCommand = cmd.guild.commands.cache.filter(c => c.name == command.name);
+                if (guildCommand.size <= 0) return;
+            }
+            if (!categories.find(x => x.id == command.category)) {
+                if (!config.commandCategory[command.category]) {
                     var emoji = {"name": "🤖"};
                     var order = 0;
                 } else {
-                    var emoji = config.commandCategory[cmd.category].emoji;
-                    var order = config.commandCategory[cmd.category].order;
+                    var emoji = config.commandCategory[command.category].emoji;
+                    var order = config.commandCategory[command.category].order;
                 }
-                var pushContent = { id: cmd.category, name: client.locale.getString(`commandcategory.${cmd.category}.title`, language), order: order, emoji: emoji, description: client.locale.getString(`commandcategory.${cmd.category}.description`, language) };
+                var pushContent = { id: command.category, name: client.locale.getString(`commandcategory.${command.category}.title`, language), order: order, emoji: emoji, description: client.locale.getString(`commandcategory.${command.category}.description`, language) };
                 categories.push(pushContent);
             }
         });
@@ -73,7 +80,14 @@ export async function exec (cmd) {
         return await cmd.editReply({ embeds: [embed] });
     } else if (command == "_showall") {
         var text_1 = client.locale.getString("commands.help.showall.text", language) + "\n";
-        var text_2 = commands.filter(x => !x.hide).map(x => { return ` \`${x.name}\``; }).toString().slice(1);
+        var text_2 = commands.filter(x => {
+            if (x.hide && !x.guildCommand) return false;
+            if (x.guildCommand) {
+                var guildCommand = cmd.guild.commands.cache.filter(c => c.name == x.name);
+                if (guildCommand.size <= 0) return false;
+            }
+            return true;
+        }).map(x => { return ` \`${x.name}\``; }).toString().slice(1);
         var text = `${text_1}\n${text_2}`;
         // console.log(text);
         var embed = {
@@ -86,7 +100,14 @@ export async function exec (cmd) {
         var cmdc = command.slice(2);
         var text_1 = "" + "\n";
         // await async2.eachSeries(client.commands.toJSON().filter(x => !x.hide).filter(x => x.category == cmdc), async (cmd) => {
-        var text_2 = commands.filter(x => !x.hide).filter(x => x.category == cmdc).map(x => { return `\n\`${x.name}\`: ${x.descriptions[language]}`; }).toString().slice(1);
+        var text_2 = commands.filter(x => {
+            if (x.hide && !x.guildCommand) return false;
+            if (x.guildCommand) {
+                var guildCommand = cmd.guild.commands.cache.filter(c => c.name == x.name);
+                if (guildCommand.size <= 0) return false;
+            }
+            return true;
+        }).filter(x => x.category == cmdc).map(x => { return `\n\`${x.name}\`: ${x.descriptions[language]}`; }).toString().slice(1);
         var text = `${text_1}\n${text_2}`;
         // console.log(text);
         var embed = {

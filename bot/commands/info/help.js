@@ -26,6 +26,7 @@ export const permissions = {
 export async function exec (cmd) {
     var language = cmd.info.language;//client.locale.getString("commands.help.title", language)
     await cmd.deferReply();
+    await cmd.guild.commands.fetch();
     if (cmd.isSlash ? cmd.info.options.getString("command") : cmd.info.option) {
         var command = cmd.isSlash ? cmd.info.options.getString("command") : cmd.info.option;
     } else {
@@ -38,16 +39,21 @@ export async function exec (cmd) {
         var SelectMenuOptions = [];
         SelectMenuOptions.push({ label: client.locale.getString("commands.help.options.home", language), value: "home" });
         SelectMenuOptions.push({ label: client.locale.getString("commands.help.options.showall", language), value: "_showall", emoji: {name: "🤖"} });
-        await eachSeries(client.commands.toJSON().filter(x => !x.hide), async (cmd) => {
-            if (!categories.find(x => x.id == cmd.category)) {
-                if (!config.commandCategory[cmd.category]) {
-                    var emoji = {name: "🤖"};
+        await eachSeries(client.commands.toJSON(), async (command) => {
+            if (command.hide && !command.guildCommand) return;
+            if (command.guildCommand) {
+                var guildCommand = cmd.guild.commands.cache.filter(c => c.name == command.name);
+                if (guildCommand.size <= 0) return;
+            }
+            if (!categories.find(x => x.id == command.category)) {
+                if (!config.commandCategory[command.category]) {
+                    var emoji = {"name": "🤖"};
                     var order = 0;
                 } else {
-                    var emoji = config.commandCategory[cmd.category].emoji;
-                    var order = config.commandCategory[cmd.category].order;
+                    var emoji = config.commandCategory[command.category].emoji;
+                    var order = config.commandCategory[command.category].order;
                 }
-                var pushContent = { id: cmd.category, name: client.locale.getString(`commandcategory.${cmd.category}.title`, language), order: order, emoji: emoji, description: client.locale.getString(`commandcategory.${cmd.category}.description`, language) };
+                var pushContent = { id: command.category, name: client.locale.getString(`commandcategory.${command.category}.title`, language), order: order, emoji: emoji, description: client.locale.getString(`commandcategory.${command.category}.description`, language) };
                 categories.push(pushContent);
             }
         });
