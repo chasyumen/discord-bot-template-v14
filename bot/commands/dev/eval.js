@@ -14,7 +14,7 @@ export const parentCommand = null;
 export const parentGroup = null;
 export const guildCommand = true;
 export const dm = false;
-export const hide = false;
+export const hide = true;
 export const isNsfw = false;
 export const slashOptions = [
     new SlashCommandStringOption().setName("code").setDescription("js code")
