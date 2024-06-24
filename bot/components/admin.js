@@ -14,6 +14,7 @@ export const permissions = {
     userNeeded: 0n,
 }
 export async function exec (cmd) {
+    if (cmd.info.subCommand !== "registerDebugCommands") return;
     var language = cmd.info.language;
     var localCmd = cmd;
     await cmd.deferUpdate();
@@ -24,7 +25,7 @@ export async function exec (cmd) {
         await new Promise(async (resolve, reject) => {
             // if (cmd.hide == true) return resolve(false);
             // if (cmd.guildCommand) return resolve(false);
-            var command = client.application.commands.cache.find(x => x.name == cmd.name);
+            var command = localCmd.guild.commands.cache.find(x => x.name == cmd.name);
             // console.log(cmd.name);
             // if (typeof command == "object") {
             //     var descriptionParsed = `${cmd.descriptions.en_US} / ${cmd.descriptions.ja}`;
@@ -114,12 +115,12 @@ export async function exec (cmd) {
             commandBuilder
             if (command) {
                 if (command.guildId == localCmd.guild.id) {
-                    await client.application.commands.edit(command, commandBuilder);
+                    await localCmd.guild.commands.edit(command, commandBuilder);
                 } else {
-                    await client.application.commands.create(commandBuilder, localCmd.guild.id);
+                    await localCmd.guild.commands.create(commandBuilder, localCmd.guild.id);
                 }
             } else {
-                await client.application.commands.create(commandBuilder, localCmd.guild.id);
+                await localCmd.guild.commands.create(commandBuilder, localCmd.guild.id);
             }
             return setTimeout(() => {resolve(true)}, 2000)
         });

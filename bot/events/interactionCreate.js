@@ -98,6 +98,7 @@ export async function run(interaction) {
         }
         var info = {
             command: interaction.customId.match(/:/) ? interaction.customId.split(":")[0] : interaction.customId,
+            subCommand: interaction.customId.match(/:/) ? interaction.customId.split(":")[1] : null,
             options: interaction.options,
             language: language,
             userId: uID,
