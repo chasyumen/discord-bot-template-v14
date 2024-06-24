@@ -1,4 +1,5 @@
 import * as Discord from "discord.js";
+import { GatewayIntentBits, Guild, TextChannel, User } from "discord.js";
 import async2 from "async";
 import config from "../config.js";
 import Client from "../src/structures/Client.js";
@@ -10,7 +11,14 @@ global.Discord = Discord;
 global.config = config;
 
 const client = (global.client = new Client({
-    intents: 3276799, //all intents / 3243773 no special intents
+    intents: [
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildPresences,
+        // GatewayIntentBits.MessageContent
+    ], //all intents / 3243773 no special intents
     allowedMentions: { repliedUser: false },
     presence: {
         status: "idle",
@@ -23,7 +31,7 @@ const client = (global.client = new Client({
 
 process.on("message", (...msg) => client.emit("processMessage", ...msg));
 
-Discord.TextChannel.prototype.fetchMessages = async function (number) {
+TextChannel.prototype.fetchMessages = async function (number) {
     if (!this.isText()) return false;
     var messages = new Collection();
     async function fm(...opt) {
@@ -50,7 +58,7 @@ Discord.TextChannel.prototype.fetchMessages = async function (number) {
     return messages;
 };
 
-Discord.User.prototype.getPermissions = async function () {
+User.prototype.getPermissions = async function () {
     var dbPerm = null;
     if (typeof config.userPermissions[this.id] == "number") {
         var configuredPermisson = String(config.userPermissions[this.id]);
@@ -74,7 +82,7 @@ Discord.User.prototype.getPermissions = async function () {
     }
 };
 
-Discord.User.prototype.getdb = async function () {
+User.prototype.getdb = async function () {
     try {
         var userData = this.client.db.cache.user.find(data => data.userId == this.id);
     } catch (error) {
@@ -93,7 +101,7 @@ Discord.User.prototype.getdb = async function () {
     return userData;
 };
 
-Discord.User.prototype.setdb = async function (data) {
+User.prototype.setdb = async function (data) {
     var userData = await this.client.db.user.findOne({
         userId: this.id
     });
@@ -106,7 +114,7 @@ Discord.User.prototype.setdb = async function (data) {
     }
 };
 
-Discord.Guild.prototype.getdb = async function () {
+Guild.prototype.getdb = async function () {
     try {
         var guildData = this.client.db.cache.guild.find(data => data.guildId == this.id);
     } catch (error) {
@@ -125,7 +133,7 @@ Discord.Guild.prototype.getdb = async function () {
     return guildData;
 };
 
-Discord.Guild.prototype.setdb = async function (data) {
+Guild.prototype.setdb = async function (data) {
     var guildData = await this.client.db.guild.findOne({
         guildId: this.id
     });
