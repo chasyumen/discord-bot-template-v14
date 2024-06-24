@@ -66,6 +66,10 @@ export default class CommandExecute {
         // }
     }
 
+    async followUp(...option) {
+        return await this.interaction.followUp(...option);
+    }
+
     // async editReply(...option) {
     //     if (!this.isSlash) {
     //         if (!this.replyMessage) return false;

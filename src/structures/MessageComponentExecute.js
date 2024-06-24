@@ -25,6 +25,10 @@ export default class MessageComponentExecute {
         return await this.interaction.deferReply(...option);
     }
 
+    async followUp(...option) {
+        return await this.interaction.followUp(...option);
+    }
+
     async update(...option) {
         return await this.interaction.update(...option);
     }

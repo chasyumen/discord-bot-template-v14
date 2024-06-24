@@ -53,6 +53,10 @@ export default class ContextMenuExecute {
         // }
     }
 
+    async followUp(...option) {
+        return await this.interaction.followUp(...option);
+    }
+
     // async editReply(...option) {
     //     if (!this.isSlash) {
     //         if (!this.replyMessage) return false;
