@@ -86,7 +86,7 @@ export async function exec (cmd) {
             var embed = {
                 title:  client.locale.getString("commands.help.command.title", language).replace(/!{command}/g, command),
                 color: config.colors.default_color,
-                description: commandInfo.description[language],
+                description: commandInfo.descriptions[language],
                 footer: {
                     text: `aliases:${commandInfo.aliases.map(x => ` ${x}`)}`
                 }
