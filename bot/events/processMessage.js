@@ -14,6 +14,7 @@ export async function run (msg) {
     } else if (msg.type == "allShardsReady") {
         if (client.allShardsReady) return;
         client.allShardsReady = true;
+        client.shardCount = msg.data;
         client.emit("statusUpdate");
         return;
     } else if (msg.type == "shutdown") {

@@ -101,19 +101,23 @@ export default class CommandManager extends Collection {
         // console.log(this.client.application.commands.cache.toJSON());
         await eachSeries(this.client.application.commands.cache.toJSON(), async (cmd) => {
             if (cmd.type !== ApplicationCommandType.ChatInput) return;
+            if (cmd.guildId) return;
             var command = client.commands.toJSON().find(x => x.name == cmd.name);
-            // console.log(command);
+            // console.log(command.guildCommand);
             if (!command) {
                 console.log("slashDelete");
                 await cmd.delete();
             } else if (command.hide === true) {
+                await cmd.delete();
+            } else if (command.guildCommand == true) {
                 await cmd.delete();
             }
             return true;
         });
         await eachSeries(this.client.commands.toJSON(), async (cmd, index) => {
             await new Promise(async (resolve, reject) => {
-                if (cmd.hide == true) resolve(false);
+                if (cmd.hide == true) return resolve(false);
+                if (cmd.guildCommand) return resolve(false);
                 var command = client.application.commands.cache.find(x => x.name == cmd.name);
                 // console.log(cmd.name);
                 // if (typeof command == "object") {

@@ -75,5 +75,5 @@ async function fetchGuilds() {
 	shards.log("LOG", "all shards are now active")
 	await fetchGuilds();
 	shards.fetchGuildsInterval = setInterval(fetchGuilds, 20000);
-	shards.shards.map((shard) => shard.send({ type: "allShardsReady" }));
+	shards.shards.map((shard) => shard.send({ type: "allShardsReady", data: shards.shards.size }));
 })();

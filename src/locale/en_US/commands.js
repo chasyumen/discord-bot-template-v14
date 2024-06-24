@@ -23,6 +23,22 @@ export const data = {
                 "home": "Home",
                 "showall": "Show all commands"
             }
+        },
+        "status": {
+            "title": "Status",
+            "statistics": {
+                "title": "Statistics",
+                "shardguilds": "Shard Servers",
+                "totalguilds": "Total Servers",
+                "shardusers": "Shard Users",
+                "totalusers": "Total Users",
+                "totalshards": "Total Shards"
+            },
+            "performance": {
+                "title": "Performance",
+                "cpu": "CPU",
+                "ram": "RAM"
+            }
         }
     }
 };

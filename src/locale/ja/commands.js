@@ -23,6 +23,22 @@ export const data = {
                 "home": "ホーム",
                 "showall": "全コマンドを表示"
             }
+        },
+        "status": {
+            "title": "ステータス",
+            "statistics": {
+                "title": "統計",
+                "shardguilds": "サーバー(シャード内)",
+                "totalguilds": "サーバー(全体)",
+                "shardusers": "ユーザー(シャード内)",
+                "totalusers": "ユーザー(全体)",
+                "totalshards": "シャード数"
+            },
+            "performance": {
+                "title": "パフォーマンス",
+                "cpu": "CPU",
+                "ram": "メモリ"
+            }
         }
     }
 };

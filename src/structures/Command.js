@@ -14,6 +14,7 @@ export default class Command {
         this.subCommands = new Collection();
         this.dm = typeof cmd.dm == "boolean" ? cmd.dm : false;
         // this.disableSlash = cmd.disableSlash;
+        this.guildCommand = typeof cmd.guildCommand == "boolean" ? cmd.guildCommand : false;
         this.hide = typeof cmd.hide == "boolean" ? cmd.hide : false;
         this.isNsfw = typeof cmd.isNsfw == "boolean" ? cmd.isNsfw : false;
         this.aliases = cmd.aliases || [];

@@ -12,6 +12,7 @@ export const category = "dev";
 export const commandType = "1"; //1: BaseCommand, 2: SubCommand, 3: SubCommandGroup
 export const parentCommand = null;
 export const parentGroup = null;
+export const guildCommand = true;
 export const dm = false;
 export const hide = false;
 export const isNsfw = false;
