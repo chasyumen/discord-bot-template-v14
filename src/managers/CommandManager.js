@@ -101,7 +101,7 @@ export default class CommandManager extends Collection {
         // console.log(this.client.application.commands.cache.toJSON());
         await eachSeries(this.client.application.commands.cache.toJSON(), async (cmd) => {
             if (cmd.type !== ApplicationCommandType.ChatInput) return;
-            if (cmd.guildId) await cmd.delete();
+            if (cmd.guildId) return await cmd.delete();
             var command = client.commands.toJSON().find(x => x.name == cmd.name);
             // console.log(command.guildCommand);
             if (!command) {
