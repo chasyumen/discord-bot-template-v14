@@ -13,10 +13,10 @@ export async function run(interaction) {
     if (!client.allShardsReady) return;
     // var sData = await interaction.guild.getdb();
     var uData = await interaction.user.getdb();
-    if (uData.language) language = uData.language;
     if (!interaction.channel.type == "0") return;
     var language = config.defaultLanguage;//uData.language;
     language = interaction.locale.replace(/-/g, "_");
+    if (uData.language) language = uData.language;
     // console.log(interaction.type);
     if (interaction.type == InteractionType.ApplicationCommand) {
         if (interaction.commandType == ApplicationCommandType.ChatInput) {
